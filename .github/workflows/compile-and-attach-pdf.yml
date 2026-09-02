@@ -1,0 +1,54 @@
+name: Compile and Comment Typst PDF
+
+on:
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  build_and_comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Compile Typst Document
+        uses: ammar-ahmed22/compile-typst-action@v2
+        with:
+          source_paths: 'main.typ'
+          output_paths: 'main.pdf'
+
+      # 1. Upload the PDF to GitHub's temporary workflow storage
+      - name: Upload PDF as Artifact
+        id: artifact-upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled-typst-pdf
+          path: main.pdf
+          retention-days: 14 # Automatically deletes the file after 14 days
+
+      # 2. Add a comment to the PR with a link to the uploaded PDF
+      - name: Add PR comment with PDF link
+        uses: actions/github-script@v7
+        env:
+          ARTIFACT_URL: ${{ steps.artifact-upload.outputs.artifact-url }}
+        with:
+          script: |
+            const commentBody = `
+              **Typst Compilation Successful!**
+              
+              Compiled the latest changes. The PDF can be downloaded from the workflow artifacts below:
+              
+              [Download Compiled PDF](${process.env.ARTIFACT_URL})
+              
+              *(Note: GitHub automatically zips artifact downloads).*
+            `;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: commentBody,
+            });
