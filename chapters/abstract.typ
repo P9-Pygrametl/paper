@@ -1,3 +1,3 @@
 #text(weight: "bold")[
-  _Abstract_ - This paper presents a discrete event simulation that evaluates distributed smart scheduling of EV charging across Denmark. Agents make preference-driven decisions through a multi-objective cost function. The simulation is calibrated using nationwide Danish empirical data. A grid search found that prioritizing expected wait time is the primary driver of system-wide improvement. The best configuration achieves a 64.28% score improvement over a path deviation-minimizing baseline. Results demonstrates that the scheduling benefit lies in limiting station congestion rather than improving average-case behavior, and that miscalibrated weights can eliminate any advantage over the baseline. The framework provides a practical tool for evaluating infrastructure changes and scheduling strategies against a realistic nationwide EV population.
+  _Abstract_ - Hello this is an abstract
 ]

@@ -10,7 +10,9 @@
 
 #align(center)[
   \
-  #text(20pt)[*How can a distributed smart scheduling system optimize the current EV charging environment*]
+  #text(
+    20pt,
+  )[Can Modern Python Make pygrametl Faster? Exploring Async/Await, Subinterpreters, and Free-Threading]
   \
   \
   Daniel Rantzau Bech, Tobias Lundholm Bjerregaard, Niklas Bo Hedehus,\
@@ -18,10 +20,10 @@
   \
   Department of Computer Science, Aalborg University \
   Aalborg, Denmark \
-  Group number: cs-26-sw-8-03 \
+  Group number: cs-26-dt-9-04 \
   Email: {dbech22, tbjerr22, nhedeh22, amarie20, amertz22, sskelk21}\@student.aau.dk
   \
-  GitHub: #link("https://github.com/SmartEVP8")[https://github.com/SmartEVP8]
+  GitHub: #link("https://github.com/P9-Pygrametl")[https://github.com/P9-Pygrametl]
   \
   \
 ]
@@ -31,11 +33,6 @@
 #columns(2)[
   #include "chapters/abstract.typ"
   #include "chapters/intro.typ"
-  #include "chapters/stateoftheart.typ"
-  #include "chapters/systemdesign.typ"
-  #include "chapters/experiment.typ"
-  #include "chapters/results.typ"
-  #include "chapters/discussion.typ"
   #include "chapters/conclusion.typ"
   #include "chapters/futurework.typ"
 
