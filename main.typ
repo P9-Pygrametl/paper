@@ -49,6 +49,7 @@
 #columns(2)[
   #include "chapters/abstract.typ"
   #include "chapters/intro.typ"
+  #include "chapters/subvsmp.typ"
   #include "chapters/conclusion.typ"
   #include "chapters/futurework.typ"
 
