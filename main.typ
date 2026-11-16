@@ -16,28 +16,37 @@
   ]
   #v(1.4em)
 
-  #grid(
-    columns: (1fr, 1fr, 1fr),
-    column-gutter: 1em,
-    row-gutter: 0.8em,
-    ..(
-      ("Daniel Rantzau Bech", "dbech22"),
-      ("Tobias Lundholm Bjerregaard", "tbjerr22"),
-      ("Anders Mariegaard", "amarie20"),
-      ("Andreas Mertz", "amertz22"),
-      ("Simon Melgaard Skelkjær", "sskelk21"),
-    ).map(((name, user)) => align(center)[
-      #text(11pt)[#name] \
-      #text(8.5pt, fill: luma(90))[#user\@student.aau.dk]
-    ])
+  #let person((name, user)) = align(center)[
+    #text(11pt)[#name] \
+    #text(8.5pt, fill: luma(90))[#user\@student.aau.dk]
+  ]
+
+  #let people = (
+    ("Daniel Rantzau Bech", "dbech22"),
+    ("Tobias Lundholm Bjerregaard", "tbjerr22"),
+    ("Anders Mariegaard", "amarie20"),
+    ("Andreas Mertz", "amertz22"),
+    ("Simon Melgaard Skelkjær", "sskelk21"),
   )
 
-  #v(1.2em)
+  #align(center)[
+    #block(width: 95%)[
+      #grid(
+        columns: (1fr,) * 6,
+        column-gutter: 1em,
+        row-gutter: 0.8em,
+        ..people.slice(0, 3).map(p => grid.cell(colspan: 2, person(p))),
+        grid.cell(colspan: 1, []),
+        ..people.slice(3).map(p => grid.cell(colspan: 2, person(p))),
+      )
+    ]
+  ]
+
   #text(10pt)[
     *Department of Computer Science, Aalborg University* \
     Aalborg, Denmark · Group cs-26-dt-9-04
   ]
-  #v(0.5em)
+
   #text(9pt)[#link("https://github.com/P9-Pygrametl")[github.com/P9-Pygrametl]]
   #v(1.2em)
 ]
