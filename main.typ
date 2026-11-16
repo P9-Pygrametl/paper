@@ -23,7 +23,6 @@
     ..(
       ("Daniel Rantzau Bech", "dbech22"),
       ("Tobias Lundholm Bjerregaard", "tbjerr22"),
-      ("Niklas Bo Hedehus", "nhedeh22"),
       ("Anders Mariegaard", "amarie20"),
       ("Andreas Mertz", "amertz22"),
       ("Simon Melgaard Skelkjær", "sskelk21"),
@@ -49,6 +48,20 @@
 #columns(2)[
   #include "chapters/abstract.typ"
   #include "chapters/intro.typ"
+  = Related Works
+  = Methods
+  == Subinterpreters
+  == Free threading
+  == Async
+  == Pipeline mode
+  = Experimental Setup
+  == Star schema diagram
+  == Hardware
+  == General Setup
+  == Benchmark
+  = Results
+  == Compare to previous pygrametl results
+  == Other
   #include "chapters/conclusion.typ"
   #include "chapters/futurework.typ"
 
