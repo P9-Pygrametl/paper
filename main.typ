@@ -78,6 +78,6 @@
 ]
 
 #pagebreak()
-
+#include "chapters/pipeline_mode.typ"
 #include "appendix.typ"
 
