@@ -57,6 +57,7 @@
 #columns(2)[
   #include "chapters/abstract.typ"
   #include "chapters/intro.typ"
+  #include "chapters/relatedworks.typ"
   = Related Works
   = Methods
   #include "chapters/subvsmp.typ"
