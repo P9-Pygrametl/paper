@@ -63,13 +63,7 @@
   == Free threading
   == Async
   == Pipeline mode
-  = Experimental Setup
-  == Star schema diagram
-  #include "figures/StarSchema.typ"
-  To evaluate the parallelization methods described in XXX, we adopt the star schema presented in @Liu2011ETLMR and @Pygrametl2011. As shown in @fig-star-schema, the schema consists of a central fact table, `testresults`, and three dimension tables: `datedim`, `testdim`, and `pagedim`. Notably, `pagedim` is modeled as a Type 2 slowly changing dimension (SCD), meaning that each update inserts a new row, and as a byproduct, `pagedim` contains the largest number of rows in the schema. The benchmark dataset was produced using the data generator @Thomsen2011Exaprogs provided in @Pygrametl2011. We specifically selected this schema because @Pygrametl2011 employed it to evaluate their parallel Jython @JythonProject implementation of `pygrametl`, which serves as a comparison for this work.
-  == Hardware
-  == General Setup
-  == Benchmark
+  #include "chapters/experiment.typ"
   = Results
   == Compare to previous pygrametl results
   == Other
