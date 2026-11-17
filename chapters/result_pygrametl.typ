@@ -31,6 +31,27 @@
 #let impl-name(name) = impl-names.at(name, default: name)
 #let runtime-name(runtime) = runtime.replace("cpython-", "")
 
+#let impl-colors = (
+  cpygrametl1_db: rgb("#0072B2"), // blue
+  cpygrametl1_async_db: rgb("#009E73"), // green
+  cpygrametl2_db: rgb("#E31A1C"), // red
+  cpygrametl2_async_db: rgb("#CC79A7"), // pink
+  jython1: rgb("#000000"), // black
+  jython2: rgb("#7F7F7F"), // grey
+  "pipeline free-threading": rgb("#6A3D9A"), // purple
+  "pipeline multiprocessing": rgb("#E69F00"), // orange
+  "pipeline sequential": rgb("#8C510A"), // brown
+)
+
+#let color-of(group) = {
+  let base = impl-colors.at(group.at(0), default: luma(120))
+  if group.at(0).starts-with("cpygrametl") and group.at(1).ends-with("t") {
+    base.lighten(45%)
+  } else {
+    base
+  }
+}
+
 // ---------- Data ----------
 #let raw-data = csv(csv-path, row-type: dictionary)
 
@@ -74,9 +95,9 @@
     let vals = pages.map(p => values-for(group, p, metric))
     let averages = vals.map(mean)
     if show-spread {
-      lq.plot(pages, averages, yerr: vals.map(std), mark: "o")
+      lq.plot(pages, averages, yerr: vals.map(std), mark: "o", color: color-of(group))
     } else {
-      lq.plot(pages, averages, mark: "o")
+      lq.plot(pages, averages, mark: "o", color: color-of(group))
     }
   })
 
@@ -90,10 +111,8 @@
   )
 }
 
-// Legend-only diagram: empty plots in the same order as the charts, so the
-// style cycle (colours) matches. Axes are hidden.
 #let legend-diagram(width) = {
-  let plots = groups.map(group => lq.plot((), (), mark: "o", label: label-of(group)))
+  let plots = groups.map(group => lq.plot((), (), mark: "o", color: color-of(group), label: label-of(group)))
 
   show lq.selector(lq.legend): set grid(columns: (auto,) * legend-columns, column-gutter: 1.2em)
   show lq.selector(lq.legend): set text(size: 8pt)
