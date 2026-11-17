@@ -6,7 +6,7 @@
       fill: if is-fk { rgb("#5b7a75") } else { rgb("#4b5563") },
       radius: 2pt,
       inset: (x: 2.5pt, y: 1.5pt),
-      text(fill: white, size: 5.5pt, weight: "bold", font: "DejaVu Sans", label)
+      text(fill: white, size: 6.5pt, weight: "bold", font: "DejaVu Sans", label)
     )
   }
 }
@@ -37,7 +37,7 @@
       ),
       ..rows.map(((badge, col)) => (
         key-badge(badge, is-fk: badge.contains("fk")),
-        text(size: 6pt, fill: rgb("#111827"), font: "DejaVu Sans", hyphenate: false, col)
+        text(size: 7.5pt, fill: rgb("#111827"), font: "DejaVu Sans", hyphenate: false, col)
       )).flatten()
     )
   )
@@ -96,9 +96,9 @@
       // Padding top aligns horizontal arrows with the middle of testresults
       pad(top: 24pt, h-arrow(25pt, dir: "left")),
       schema-card("testresults", is-fact: true, (
-        ("pk,fk3", "testid"),
-        ("pk,fk2", "dateid"),
-        ("pk,fk1", "pageid"),
+        ("pk,fk", "testid"),
+        ("pk,fk", "dateid"),
+        ("pk,fk", "pageid"),
         ("", "errors"),
       )),
       pad(top: 24pt, h-arrow(25pt, dir: "right")),

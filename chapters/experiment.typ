@@ -1,7 +1,8 @@
 = Experimental Setup
 == Star schema diagram
 #include "../figures/StarSchema.typ"
-To evaluate the parallelization methods described in XXX, we use the same star schema (@fig-star-schema), data generator @Thomsen2011Exaprogs, and benchmark setup as @Liu2011ETLMR and @Pygrametl2011, allowing direct comparison with the parallel Jython @JythonProject implementation of pygrametl evaluated there.
+To evaluate the parallelization methods described in @Methods, we use the same star schema (@fig-star-schema), data generator @Thomsen2011Exaprogs, and benchmark setup as #text(style: "italic")[ETLMR: A Highly Scalable Dimensional ETL
+Framework Based on MapReduce] @Liu2011ETLMR and #text(style: "italic")[Easy and Effective Parallel Programmable ETL] @Pygrametl2011, allowing direct comparison with the parallel Jython @JythonProject implementation of pygrametl evaluated there.
 == Hardware
 #figure(
   table(
