@@ -58,7 +58,6 @@
   #include "chapters/abstract.typ"
   #include "chapters/intro.typ"
   #include "chapters/relatedworks.typ"
-  = Related Works
   = Methods
   #include "chapters/subvsmp.typ"
   = Methods <Methods>
