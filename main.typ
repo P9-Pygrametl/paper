@@ -60,10 +60,11 @@
   = Related Works
   = Methods
   #include "chapters/subvsmp.typ"
+  = Methods <Methods>
   == Free threading
   == Async
   == Pipeline mode
-  #include "chapters/experiment.typ"
+  #include "chapters/experiment.typ" 
   = Results
   #include "chapters/result_pygrametl.typ"
   == Other
