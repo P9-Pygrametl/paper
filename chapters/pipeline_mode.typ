@@ -1,32 +1,48 @@
 == Pipeline Mode
 
-Pygrametl loads data row by row. Each `insert` sends one statement to the database and waits for the reply. Because the reply carries nothing that subsequent inserts depend on, this wait is wasted. It dominates statement cost over remote connections and leaves the process largely idle even locally. Existing parallel workflows in pygrametl only distribute this wait across workers rather than eliminating it.
+pygrametl loads data row by row. Each `insert` sends one statement to the database and waits for the reply. Because the reply carries nothing that subsequent inserts depend on, this wait is wasted. It dominates statement cost over remote connections and leaves the process largely idle. Existing parallel workflows in pygrametl only distribute this wait across workers rather than eliminating it.
 
-PostgreSQL's pipeline mode allows a client to send batches of statements without waiting for individual responses. The server executes them in order and the client reads results at explicit synchronization points. We implemented a `PipelinedConnectionWrapper` around a standard psycopg 3 connection to keep ETL code transferable from original pygrametl. Fire-and-forget statements such as `INSERT` are queued unanswered, while the wrapper synchronizes whenever a result is required (`SELECT` or `commit`). Because PostgreSQL prohibits `COPY` inside a pipeline, the wrapper temporarily exits pipeline mode before a `COPY` and re-enters it afterward.
-
-We evaluate three pipelined variants built on existing workflows: `Pipeline sequential` (`cpygrametl1_db` with the pipelined wrapper), `Pipeline multiprocessing` (`cpygrametl2_db` using a pipelined connection per worker process), and `Pipeline free-threading` (`cpygrametl2_db` running threads on free-threaded CPython `3.15t`).
+PostgreSQL's~#cite(<postgres>) pipeline mode (@fig-timeline) allows a client to send batches of statements without waiting for individual responses. The server executes them in order and the client reads results at explicit synchronization points. We implemented a `PipelinedConnectionWrapper` around a standard psycopg 3~#cite(<psycopg3>) connection to keep ETL code transferable from original pygrametl. Fire-and-forget statements such as `INSERT` are queued unanswered, while the wrapper synchronizes whenever a result is required (`SELECT` or `commit`). Because PostgreSQL prohibits `COPY` inside a pipeline, the wrapper temporarily exits pipeline mode before a `COPY` and re-enters it afterward.
 
 #figure(
-  {
-    set text(size: 9pt)
-    table(
-      columns: (1fr, auto, auto, auto, auto),
-      inset: (x: 2.5pt, y: 4pt),
-      stroke: none,
-      align: (left, right, right, right, right),
-      table.hline(),
-      table.header[*Impl.*][*Wall (s)*][*Speedup*][*CPU (s)*][*CPU (%)*],
-      table.hline(stroke: 0.5pt),
-      [Baseline], [#box[111.9 #sym.plus.minus 12.1]], [1.0x], [44.4], [40.0],
-      [Sequential], [#box[36.8 #sym.plus.minus 0.3]], [3.0x], [31.9], [86.6],
-      [Multiprocessing], [#box[22.8 #sym.plus.minus 0.2]], [4.9x], [72.3], [317.3],
-      [Free-threading], [#box[17.5 #sym.plus.minus 0.2]], [6.4x], [66.4], [379.5],
-      table.hline(),
+  layout(avail => {
+    let label-w = 1.8cm
+    let bar-w = avail.width - label-w
+    let unit = bar-w / 18 // 6 sends (1u each) + 6 waits (2u each) = 18 units
+    let seg(u, fill, body) = box(
+      width: u * unit,
+      height: 0.65cm,
+      fill: fill,
+      stroke: 0.5pt + white,
+      align(center + horizon, text(
+        font: "DejaVu Sans",
+        size: 6.5pt,
+        fill: white,
+        weight: "bold",
+        body,
+      )),
     )
-  },
-  caption: [Mean wall time, standard deviation, CPU time, and utilization at 100 pages.],
-)
+    let send = seg.with(1, rgb("#3498db"))
+    let wait = seg.with(2, rgb("#e74c3c"))
+    let sync = seg.with(2, rgb("#e67e22"))
 
-Pipelining alone makes the sequential workflow 3.0x faster than `cpygrametl1_db` while cutting CPU time by 28 percent and raising CPU utilization from 40.0 to 86.6 percent as round-trip idle time disappears. Combining pipelining with parallelism reaches 4.9x speedup for multiprocessing and 6.4x for free-threading, trading 1.5x to 1.6x higher total CPU time for lower wall time.
+    grid(
+      columns: (label-w, 1fr),
+      row-gutter: 0.6em,
+      align: (left + horizon, left + horizon),
+      text(size: 8.5pt)[Sequential], stack(dir: ltr, ..range(6).map(_ => (send[S], wait[wait])).flatten()),
+      text(size: 8.5pt)[Pipelined], stack(dir: ltr, ..range(6).map(_ => send[S]), sync[sync]),
+    )
+    v(0.5em)
+    text(size: 7.5pt)[
+      #box(width: 0.5em, height: 0.5em, fill: rgb("#3498db")) send a statement
+      #h(0.8em)
+      #box(width: 0.5em, height: 0.5em, fill: rgb("#e74c3c")) wait for a reply
+      #h(0.8em)
+      #box(width: 0.5em, height: 0.5em, fill: rgb("#e67e22")) wait at a sync point
+    ]
+  }),
+  caption: [Client activity over time for six statements. Time runs from left to right. Segment widths are illustrative and not to scale.],
+) <fig-timeline>
 
-Run time scales linearly with page count across all pipelined variants, with speedups peaking at 25 pages (7.0x for free-threading) and tapering slightly by 100 pages (6.4x). Pipelining also eliminates timing jitter, dropping standard deviation at 100 pages from 12.1 seconds to under 0.3 seconds. Three of the 120 `Pipeline free-threading` runs crashed with a segmentation fault (one each at 50, 75, and 100 pages) and are excluded from the means above. The root cause remains under investigation.
+We evaluate three pipelined variants built on existing workflows: `Pipeline sequential` (`cpygrametl1_db` with the pipelined wrapper), `Pipeline multiprocessing` (`cpygrametl2_db` using a pipelined connection per worker process), and `Pipeline free-threading` (`cpygrametl2_db` running threads on free-threaded CPython `3.15t`).
