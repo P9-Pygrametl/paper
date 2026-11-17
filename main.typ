@@ -60,7 +60,7 @@
   #include "chapters/relatedworks.typ"
   = Methods <Methods>
   #include "chapters/subvsmp.typ"
-  == Free threading
+  #include "chapters/freethreading.typ"
   == Async
   #include "chapters/pipeline_mode.typ"
   #include "chapters/experiment.typ"
