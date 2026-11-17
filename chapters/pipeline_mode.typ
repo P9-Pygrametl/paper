@@ -15,7 +15,6 @@ PostgreSQL's~#cite(<postgres>) pipeline mode (@fig-timeline) allows a client to 
       fill: fill,
       stroke: 0.5pt + white,
       align(center + horizon, text(
-        font: "DejaVu Sans",
         size: 6.5pt,
         fill: white,
         weight: "bold",
