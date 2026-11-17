@@ -60,17 +60,14 @@
   #include "chapters/relatedworks.typ"
   = Related Works
   = Methods
-  == Subinterpreters
+  #include "chapters/subvsmp.typ"
+  = Methods <Methods>
   == Free threading
   == Async
-  == Pipeline mode
-  = Experimental Setup
-  == Star schema diagram
-  == Hardware
-  == General Setup
-  == Benchmark
+  #include "chapters/pipeline_mode.typ"
+  #include "chapters/experiment.typ"
   = Results
-  == Compare to previous pygrametl results
+  #include "chapters/result_pygrametl.typ"
   == Other
   #include "chapters/conclusion.typ"
   #include "chapters/futurework.typ"

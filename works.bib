@@ -1,39 +1,43 @@
-@misc{oetiker2010,
-   title={The Not So Short Introduction to LaTeX2e},
-   author={Oetiker, Tobias},
-   year={2010},
-   url={http://tobi.oetiker.ch/lshort/lshort.pdf}
- }
-
- @online{dst2024,
-   title = {Elbiler har rundet den halve million i Danmark},
-   author = {{Danmarks Statistik}},
-   year = {2025},
-   url = {https://www.dst.dk/da/Statistik/udgivelser/NytHtml?cid=50511},
-   note = {Accessed: 2024-05-23}
- }
-
-# @article{chiu2024,
-  title = {A simulation-based optimization approach for the recharging scheduling problem of electric buses},
-  author = {Chiu, Chun-Chih and Huang, Hao and Chen, Ching-Fu},
-  journal = {Transportation Research Part E: Logistics and Transportation Review},
-  volume = {192},
-  pages = {103835},
-  year = {2024},
-  publisher = {Elsevier},
-  doi = {10.1016/j.tre.2024.103835}
+@misc{pep734,
+  author = {Snow, Eric},
+  title = {{PEP 734 -- Multiple Interpreters in the Stdlib}},
+  year = {2025},
+  howpublished = {\url{https://peps.python.org/pep-0734/}},
+  note = {Python Enhancement Proposal}
 }
 
-@inproceedings{sumo2018,
-   author    = {Lopez, Pablo Alvarez and Behrisch, Michael and Bieker-Walz, Laura and Erdmann, Jakob and Fl{\"o}tter{\"o}d, Yun-Pang and Hilbrich, Robert and L{\"u}cken, Leonhard and Rummel, Johannes and Wagner, Peter and Wiessner, Evamarie},
-   title     = {Microscopic Traffic Simulation using {SUMO}},
-   booktitle = {2018 21st International Conference on Intelligent Transportation Systems (ITSC)},
-   year      = {2018},
-   pages     = {2575--2582},
-   doi       = {10.1109/ITSC.2018.8569938}
- }
+@misc{python-subinterpreters,
+  author = {{Python Software Foundation}},
+  title = {Multiple Interpreters in a Python Process},
+  year = {2026},
+  howpublished = {\url{https://docs.python.org/3.14/c-api/subinterpreters.html}}
+}
 
- @book{banks2010discrete,
+@manual{pygrametl-docs,
+  author = {{Aalborg University}},
+  title = {pygrametl Documentation},
+  edition = {2.9},
+  year = {2026},
+  month = mar
+}
+
+@online{psycopg3,
+  title = {psycopg3: The Python PostgreSQL Driver},
+  author = {{The psycopg Team}},
+  year = {2024},
+  url = {https://www.psycopg.org/psycopg3/docs/},
+  note = {Accessed: 2024-05-23}
+}
+
+@online{postgres,
+  title = {PostgreSQL: The World's Most Advanced Open Source Relational Database},
+  author = {{The PostgreSQL Global Development Group}},
+  year = {2024},
+  url = {https://www.postgresql.org/},
+  note = {Accessed: 2024-05-23}
+}
+
+@book{banks2010discrete,
    title={Discrete-Event System Simulation},
    author={Banks, Jerry and Carson, John S. and Nelson, Barry L. and Nicol, David M.},
    edition={5th},
@@ -59,4 +63,53 @@
   year = {2011},
   publisher = {Association for Computing Machinery},
   doi = {10.1145/2064676.2064684}
+}
+
+@inproceedings{Liu2011ETLMR,
+  author    = {Liu, Xiufeng and Thomsen, Christian and Pedersen, Torben Bach},
+  title     = {{ETLMR}: A Highly Scalable Dimensional {ETL} Framework Based on {MapReduce}},
+  booktitle = {Data Warehousing and Knowledge Discovery},
+  volume    = {6862},
+  pages     = {96--111},
+  year      = {2011},
+  publisher = {Springer},
+  address   = {Berlin, Heidelberg},
+  doi       = {10.1007/978-3-642-23544-3_8}
+}
+
+@inproceedings{Pygrametl2011,
+author = {Thomsen, Christian and Pedersen, Torben Bach},
+title = {Easy and effective parallel programmable ETL},
+year = {2011},
+isbn = {9781450309639},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2064676.2064684},
+doi = {10.1145/2064676.2064684},
+abstract = {Extract-Transform-Load (ETL) programs are used to load data into data warehouses (DWs). An ETL program must extract data from sources, apply different transformations to it, and use the DW to look up/insert the data. It is both time consuming to develop and to run an ETL program. It is, however, typically the case that the ETL program can exploit both task parallelism and data parallelism to run faster. This, on the other hand, makes the development time longer as it is complex to create a parallel ETL program. To remedy this situation, we propose efficient ways to parallelize typical ETL tasks and we implement these new constructs in an ETL framework. The constructs are easy to apply and do only require few modifications to an ETL program to parallelize it. They support both task and data parallelism and give the programmer different possibilities to choose from. An experimental evaluation shows that by using a little more CPU time, the (wall-clock) time to run an ETL program can be greatly reduced.},
+booktitle = {Proceedings of the ACM 14th International Workshop on Data Warehousing and OLAP},
+pages = {37-44},
+numpages = {8},
+keywords = {extract-transform-load (etl), parallelism, python},
+location = {Glasgow, Scotland, UK},
+series = {DOLAP '11}
+}
+
+@misc{Thomsen2011Exaprogs,
+  author       = {Thomsen, Christian and Pedersen, Torben Bach},
+  title        = {Examples and Data Generator for ``Easy and Effective Parallel Programmable {ETL}''},
+  year         = {2011},
+  howpublished = {\url{https://pygrametl.org/assets/exaprogs.zip}},
+  url          = {https://pygrametl.org/assets/exaprogs.zip},
+  urldate      = {2026-11-16}
+}
+
+@misc{JythonProject,
+  author       = {{The Jython Project}},
+  title        = {{Jython}: {Python} for the {Java} Platform},
+  version      = {2.7.4},
+  year         = {2024},
+  howpublished = {\url{https://www.jython.org/index}},
+  url          = {https://www.jython.org/index},
+  urldate      = {2026-11-16}
 }
