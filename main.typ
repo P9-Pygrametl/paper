@@ -63,11 +63,7 @@
   == Free threading
   == Async
   #include "chapters/pipeline_mode.typ"
-  = Experimental Setup
-  == Star schema diagram
-  == Hardware
-  == General Setup
-  == Benchmark
+  #include "chapters/experiment.typ"
   = Results
   #include "chapters/result_pygrametl.typ"
   == Other
