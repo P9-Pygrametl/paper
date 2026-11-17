@@ -24,7 +24,6 @@ psycopg 3.3.5 (with psycopg-c 3.3.5).
 
 The source and data warehouse databases ran as two PostgreSQL 18.6 Docker
 containers with the default configuration on the same machine as the
-benchmark. Each configuration (page sizes 25, 50, 75 and 100) was run
-30 times and interleaved randomly with no warm-up.
+benchmark. Each configuration (page sizes 25 (1.125 M rows), 50 (2.25 M rows), 75 (3.375 M rows) and 100 (4.5M rows)) was run 30 times and interleaved randomly with no warm-up.
 
 == Benchmark
