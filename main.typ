@@ -58,9 +58,8 @@
   #include "chapters/abstract.typ"
   #include "chapters/intro.typ"
   #include "chapters/relatedworks.typ"
-  = Methods
-  #include "chapters/subvsmp.typ"
   = Methods <Methods>
+  #include "chapters/subvsmp.typ"
   == Free threading
   == Async
   #include "chapters/pipeline_mode.typ"
