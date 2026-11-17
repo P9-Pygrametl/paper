@@ -2,7 +2,9 @@
 
 pygrametl loads data row by row. Each `insert` sends one statement to the database and waits for the reply. Because the reply carries nothing that subsequent inserts depend on, this wait is wasted. It dominates statement cost over remote connections and leaves the process largely idle. Existing parallel workflows in pygrametl only distribute this wait across workers rather than eliminating it.
 
-PostgreSQL's~#cite(<postgres>) pipeline mode (@fig-timeline) allows a client to send batches of statements without waiting for individual responses. The server executes them in order and the client reads results at explicit synchronization points. We implemented a `PipelinedConnectionWrapper` around a standard psycopg 3~#cite(<psycopg3>) connection to keep ETL code transferable from original pygrametl. Fire-and-forget statements such as `INSERT` are queued unanswered, while the wrapper synchronizes whenever a result is required (`SELECT` or `commit`). Because PostgreSQL prohibits `COPY` inside a pipeline, the wrapper temporarily exits pipeline mode before a `COPY` and re-enters it afterward.
+#ref(<fig-timeline>) illustrates PostgreSQL's pipeline mode which enables
+a client to send batches of statements without
+waiting for individual responses~#cite(<postgres>). The server executes them in order and the client reads results at explicit synchronization points. We implemented a `PipelinedConnectionWrapper` around a standard psycopg 3 connection to keep ETL code transferable from original pygrametl~#cite(<psycopg3>). Fire-and-forget statements such as `INSERT` are queued unanswered, while the wrapper synchronizes whenever a result is required (`SELECT` or `commit`). Because PostgreSQL prohibits `COPY` inside a pipeline, the wrapper temporarily exits pipeline mode before a `COPY` and re-enters it afterward.
 
 #figure(
   layout(avail => {
