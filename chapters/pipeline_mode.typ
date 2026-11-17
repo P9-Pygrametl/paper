@@ -7,16 +7,24 @@ PostgreSQL's pipeline mode allows a client to send batches of statements without
 We evaluate three pipelined variants built on existing workflows: `Pipeline sequential` (`cpygrametl1_db` with the pipelined wrapper), `Pipeline multiprocessing` (`cpygrametl2_db` using a pipelined connection per worker process), and `Pipeline free-threading` (`cpygrametl2_db` running threads on free-threaded CPython `3.15t`).
 
 #figure(
-  table(
-    columns: 6,
-    align: (left, right, right, right, right, right),
-    table.header[Implementation][Wall (s)][Std. dev. (s)][Speedup][CPU (s)][CPU (%)],
-    [`cpygrametl1_db`], [111.9], [12.1], [1.0x], [44.4], [40.0],
-    [Pipeline sequential], [36.8], [0.3], [3.0x], [31.9], [86.6],
-    [Pipeline multiprocessing], [22.8], [0.2], [4.9x], [72.3], [317.3],
-    [Pipeline free-threading], [17.5], [0.2], [6.4x], [66.4], [379.5],
-  ),
-  caption: [Mean wall time, CPU time, and utilization at 100 pages.],
+  {
+    set text(size: 9pt)
+    table(
+      columns: (1fr, auto, auto, auto, auto),
+      inset: (x: 2.5pt, y: 4pt),
+      stroke: none,
+      align: (left, right, right, right, right),
+      table.hline(),
+      table.header[*Impl.*][*Wall (s)*][*Speedup*][*CPU (s)*][*CPU (%)*],
+      table.hline(stroke: 0.5pt),
+      [Baseline], [#box[111.9 #sym.plus.minus 12.1]], [1.0x], [44.4], [40.0],
+      [Sequential], [#box[36.8 #sym.plus.minus 0.3]], [3.0x], [31.9], [86.6],
+      [Multiprocessing], [#box[22.8 #sym.plus.minus 0.2]], [4.9x], [72.3], [317.3],
+      [Free-threading], [#box[17.5 #sym.plus.minus 0.2]], [6.4x], [66.4], [379.5],
+      table.hline(),
+    )
+  },
+  caption: [Mean wall time, standard deviation, CPU time, and utilization at 100 pages.],
 )
 
 Pipelining alone makes the sequential workflow 3.0x faster than `cpygrametl1_db` while cutting CPU time by 28 percent and raising CPU utilization from 40.0 to 86.6 percent as round-trip idle time disappears. Combining pipelining with parallelism reaches 4.9x speedup for multiprocessing and 6.4x for free-threading, trading 1.5x to 1.6x higher total CPU time for lower wall time.

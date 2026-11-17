@@ -62,7 +62,7 @@
   == Subinterpreters
   == Free threading
   == Async
-  == Pipeline mode
+  #include "chapters/pipeline_mode.typ"
   = Experimental Setup
   == Star schema diagram
   == Hardware
