@@ -8,7 +8,7 @@
     table.header[*Component*][*Specification*],
     [CPU], [Intel Core Ultra 7 265KF, 20 cores (8P + 12E, no SMT), up to 5.6 GHz, 36 MiB L2, 30 MiB L3],
     [Memory], [64 GB (2 × 32 GB) DDR5-6000],
-    [Storage], [WD_BLACK SN770 2 TB NVMe],
+    [Storage], [WD_BLACK SN770 2 TB NVMe, 5865 MB/s read / 4502 MB/s write],
     [Motherboard], [ASUS TUF Gaming Z890-Plus WiFi],
     [OS], [Ubuntu 26.04.1 LTS, Linux 7.0.0-38-generic],
   ),
