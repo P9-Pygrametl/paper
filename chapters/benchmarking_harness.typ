@@ -63,9 +63,59 @@ Every run is a fresh subprocess. This is the only way to compare CPython, free-t
 
 === Validation
 
-After each run the warehouse is validated in two steps. The structural check requires exit code zero, a non-empty fact table and no fact rows that reference a missing dimension row. The deep check compares the warehouse content with that of an oracle. For each page size, the first run of an oracle mode is the oracle.
+After each run the warehouse is validated in two steps. The structural check requires exit code zero, a non-empty fact table and no fact rows that reference a missing dimension row. The deep check compares the warehouse content with a reference run, called the oracle. For each page size, the first run of an oracle mode is the oracle.
 
-Surrogate keys depend on insertion order, so parallel runs cannot be compared row by row. Instead, the deep check hashes every dimension row without its surrogate key. Every fact row is joined to its dimensions and hashed on business keys. The hashes are summed into one fingerprint, which does not depend on row order. A run whose fingerprint differs from the oracle is marked invalid.
+Surrogate keys depend on insertion order, so parallel runs cannot be compared row by row. The fingerprint in @lst:fingerprint hashes every row without surrogate keys and sums the hashes. A run whose fingerprint differs from the oracle is marked invalid.
+
+#let fingerprint-sql = "WITH rows AS (
+  SELECT to_jsonb(p) - 'pageid' AS doc
+  FROM page p
+  UNION ALL
+  SELECT jsonb_build_object(
+    'url', p.url, 'version', p.version,
+    'test', t.testname, 'date', d.date,
+    'errors', f.errors)
+  FROM testresults f
+  JOIN page p ON p.pageid = f.pageid
+  JOIN test t ON t.testid = f.testid
+  JOIN date d ON d.dateid = f.dateid
+)
+SELECT count(*),
+       sum(hashtextextended(doc::text, 0)::numeric)
+FROM rows"
+
+#figure(
+  ```sql
+  WITH rows AS (
+    SELECT to_jsonb(p) - 'pageid' AS doc
+    FROM page p
+    UNION ALL
+    SELECT to_jsonb(t) - 'testid'
+    FROM test t
+    UNION ALL
+    SELECT to_jsonb(d) - 'dateid'
+    FROM date d
+    UNION ALL
+    SELECT jsonb_build_object(
+      'url', p.url,
+      'version', p.version,
+      'validfrom', p.validfrom,
+      'validto', p.validto,
+      'test', t.testname,
+      'date', d.date,
+      'errors', f.errors)
+    FROM testresults f
+    JOIN page p ON p.pageid = f.pageid
+    JOIN test t ON t.testid = f.testid
+    JOIN date d ON d.dateid = f.dateid
+  )
+  SELECT count(*),
+         coalesce(sum(hashtextextended(doc::text, 0)::numeric), 0)
+  FROM rows
+  ```,
+  caption: [Fingerprint query. Schema name omitted for brevity. The query hashes every row without surrogate keys and sums the hashes.],
+  kind: raw,
+) <lst:fingerprint>
 
 === Result storage
 
