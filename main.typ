@@ -65,7 +65,7 @@
   == Pipeline mode
   #include "chapters/experiment.typ"
   = Results
-  == Compare to previous pygrametl results
+  #include "chapters/result_pygrametl.typ"
   == Other
   #include "chapters/conclusion.typ"
   #include "chapters/futurework.typ"
