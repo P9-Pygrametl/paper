@@ -1,9 +1,6 @@
+#import "/figures/dict-transfer.typ": dict-transfer
 
 #figure(
-  image("figures/dict-transfer.pdf", width: 85%),
-  caption: [
-    Dictionary transfer throughput across varying row
-    widths. Multiprocessing queues and pipes consistently
-    outperform subinterpreter queues.
-  ],
+  dict-transfer,
+  caption: [Dictionary transfer throughput across different row sizes.],
 ) <fig:dict-transfer>

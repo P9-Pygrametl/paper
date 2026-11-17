@@ -57,10 +57,9 @@
 #columns(2)[
   #include "chapters/abstract.typ"
   #include "chapters/intro.typ"
-  #include "chapters/subvsmp.typ"
   = Related Works
   = Methods
-  == Subinterpreters
+  #include "chapters/subvsmp.typ"
   == Free threading
   == Async
   == Pipeline mode
