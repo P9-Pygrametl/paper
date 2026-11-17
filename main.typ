@@ -63,11 +63,7 @@
   == Free threading
   == Async
   == Pipeline mode
-  = Experimental Setup
-  == Star schema diagram
-  == Hardware
-  == General Setup
-  == Benchmark
+  #include "chapters/experiment.typ"
   = Results
   == Compare to previous pygrametl results
   == Other
