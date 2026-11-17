@@ -47,4 +47,59 @@
   year = {2024},
   url = {https://www.postgresql.org/},
   note = {Accessed: 2024-05-23}
+ @book{banks2010discrete,
+   title={Discrete-Event System Simulation},
+   author={Banks, Jerry and Carson, John S. and Nelson, Barry L. and Nicol, David M.},
+   edition={5th},
+   year={2010},
+   publisher={Prentice-Hall}
+ }
+
+@inproceedings{Liu2011ETLMR,
+  author    = {Liu, Xiufeng and Thomsen, Christian and Pedersen, Torben Bach},
+  title     = {{ETLMR}: A Highly Scalable Dimensional {ETL} Framework Based on {MapReduce}},
+  booktitle = {Data Warehousing and Knowledge Discovery},
+  volume    = {6862},
+  pages     = {96--111},
+  year      = {2011},
+  publisher = {Springer},
+  address   = {Berlin, Heidelberg},
+  doi       = {10.1007/978-3-642-23544-3_8}
+}
+
+@inproceedings{Pygrametl2011,
+author = {Thomsen, Christian and Pedersen, Torben Bach},
+title = {Easy and effective parallel programmable ETL},
+year = {2011},
+isbn = {9781450309639},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2064676.2064684},
+doi = {10.1145/2064676.2064684},
+abstract = {Extract-Transform-Load (ETL) programs are used to load data into data warehouses (DWs). An ETL program must extract data from sources, apply different transformations to it, and use the DW to look up/insert the data. It is both time consuming to develop and to run an ETL program. It is, however, typically the case that the ETL program can exploit both task parallelism and data parallelism to run faster. This, on the other hand, makes the development time longer as it is complex to create a parallel ETL program. To remedy this situation, we propose efficient ways to parallelize typical ETL tasks and we implement these new constructs in an ETL framework. The constructs are easy to apply and do only require few modifications to an ETL program to parallelize it. They support both task and data parallelism and give the programmer different possibilities to choose from. An experimental evaluation shows that by using a little more CPU time, the (wall-clock) time to run an ETL program can be greatly reduced.},
+booktitle = {Proceedings of the ACM 14th International Workshop on Data Warehousing and OLAP},
+pages = {37-44},
+numpages = {8},
+keywords = {extract-transform-load (etl), parallelism, python},
+location = {Glasgow, Scotland, UK},
+series = {DOLAP '11}
+}
+
+@misc{Thomsen2011Exaprogs,
+  author       = {Thomsen, Christian and Pedersen, Torben Bach},
+  title        = {Examples and Data Generator for ``Easy and Effective Parallel Programmable {ETL}''},
+  year         = {2011},
+  howpublished = {\url{https://pygrametl.org/assets/exaprogs.zip}},
+  url          = {https://pygrametl.org/assets/exaprogs.zip},
+  urldate      = {2026-11-16}
+}
+
+@misc{JythonProject,
+  author       = {{The Jython Project}},
+  title        = {{Jython}: {Python} for the {Java} Platform},
+  version      = {2.7.4},
+  year         = {2024},
+  howpublished = {\url{https://www.jython.org/index}},
+  url          = {https://www.jython.org/index},
+  urldate      = {2026-11-16}
 }

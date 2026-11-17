@@ -58,7 +58,7 @@
   #include "chapters/abstract.typ"
   #include "chapters/intro.typ"
   = Related Works
-  = Methods
+  = Methods <Methods>
   == Subinterpreters
   == Free threading
   == Async
