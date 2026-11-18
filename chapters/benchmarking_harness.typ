@@ -41,3 +41,26 @@ Our harness, is a small Python package, `run_all`, that runs every implementatio
 After each run the warehouse is validated. The structural check requires exit code zero, a non-empty fact table and no fact rows that reference a missing dimension row. The deep check compares a fingerprint of the warehouse with that of a reference run of the original sequential implementation, the oracle. Surrogate keys depend on insertion order, so parallel runs cannot be compared row by row. Instead, one SQL query returns the row count and the sum of 64-bit hashes of every dimension row without its surrogate key and of every fact row joined to its dimensions on business keys. Since a sum does not depend on row order, neither does the fingerprint. A run whose fingerprint differs from the oracle is marked invalid.
 
 This validation exposed a bug in pygrametl's multiprocessing implementation, where a commit could overtake queued INSERT statements and leave fact rows without a matching page row. We fixed it before taking the reported measurements.
+
+== Parameter Tuning
+#figure(
+  table(
+    columns: (auto, auto),
+    align: (left, left),
+    table.header[*Parameter*][*Levels*],
+    [`batchsize`], [250, 500, 1000, 2500],
+    [`queuesize`], [10, 50, 100, 200],
+    [`bulksize`], [50k, 100k, 250k, 500k],
+    [`fetchsize`], [1k, 5k, 20k, 100k],
+    [`JVM heap`], [4g, 6g, 8g],
+  ),
+  caption: [Tuning levels.],
+) <tab:tuning>
+
+The implementations expose four parameters that affect throughput. The batch and queue sizes control how many rows the decoupled dimension and fact tables and the `ProcessSource` keep in flight, the bulk size controls how many fact rows are accumulated before a `COPY`, and the fetch size controls how many source rows are retrieved per database round trip. The Jython implementations additionally take a JVM heap size.
+
+These parameters depend on workload size. A bulk size larger than the fact table cannot be distinguished from a smaller one that still fits in a single load, and the queue and batch sizes determine how many rows remain in flight. We tune at 100 pages (4.5M fact rows), where every level is observable, and keep the resulting profile for the smaller page sizes. This gives each implementation its best observed configuration at the largest scale, not a per-size optimum.
+
+A full Cartesian product of all levels would require 2,432 configurations across all modes, or 7,296 timed runs at three repetitions. We use coordinate descent instead. Each pass visits the parameters in shuffled order. For one parameter, every level is run three times with the other parameters fixed, and the level with the lowest median wall time is selected. The search stops when a pass changes no parameter, or after three passes. The selected configuration is then rerun three times to obtain a median wall time. These runs do not alter the selection. Across all modes, the procedure requires at most 1,494 timed runs plus 39 for this final measurement.
+
+Each trial follows the benchmark harness procedure: a fresh subprocess, a warehouse reset, and measurement of wall time, CPU time and peak PSS. Wall time is the selection objective, while CPU time and peak PSS are recorded for every trial. The search is local where it finds a strong configuration along the coordinate directions but does not prove a global optimum.
