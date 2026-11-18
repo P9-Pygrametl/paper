@@ -64,6 +64,7 @@
   == Async
   #include "chapters/pipeline_mode.typ"
   #include "chapters/experiment.typ"
+  #include "chapters/benchmarking_harness.typ"
   = Results
   #include "chapters/result_pygrametl.typ"
   == Other

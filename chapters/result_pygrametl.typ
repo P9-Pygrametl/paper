@@ -2,7 +2,7 @@
 
 #let csv-path = "../results/merged.csv"
 #let page-sizes = (25, 50, 75, 100)
-#let only-valid = false
+#let only-valid = true
 #let show-spread = false // error bars on charts
 #let table-spread = true // "mean ± std" in the table
 
@@ -107,6 +107,7 @@
     legend: none,
     width: width,
     height: height,
+    xaxis: (ticks: (25, 50, 75, 100), subticks: none),
     ..plots,
   )
 }

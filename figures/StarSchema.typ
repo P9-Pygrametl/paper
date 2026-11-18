@@ -6,7 +6,7 @@
       fill: if is-fk { rgb("#5b7a75") } else { rgb("#4b5563") },
       radius: 2pt,
       inset: (x: 2.5pt, y: 1.5pt),
-      text(fill: white, size: 6.5pt, weight: "bold", font: "DejaVu Sans", label)
+      text(fill: white, size: 6.5pt, weight: "bold", label)
     )
   }
 }
@@ -33,11 +33,11 @@
         fill: header-bg,
         align: center,
         inset: (x: 5pt, y: 3.5pt),
-        text(fill: white, weight: "bold", size: 6.5pt, font: "DejaVu Sans", hyphenate: false, title)
+        text(fill: white, weight: "bold", size: 6.5pt, hyphenate: false, title)
       ),
       ..rows.map(((badge, col)) => (
         key-badge(badge, is-fk: badge.contains("fk")),
-        text(size: 7.5pt, fill: rgb("#111827"), font: "DejaVu Sans", hyphenate: false, col)
+        text(size: 7.2pt, fill: rgb("#111827"), hyphenate: false, col)
       )).flatten()
     )
   )
@@ -63,7 +63,7 @@
 
 #figure(
   align(center, {
-    set text(font: "DejaVu Sans", hyphenate: false, size: 10pt)
+    set text(hyphenate: false, size: 10pt)
     grid(
       columns: (auto, 25pt, auto, 25pt, auto),
       rows: (auto, 25pt, auto),
