@@ -8,18 +8,18 @@ Our harness is a small Python package, `run_all`, that runs every implementation
   canvas(length: 1cm, {
     import draw: *
 
-    let node(y, name, body, module) = {
+    let node(y, name, body) = {
       rect((-2.6, y - 0.35), (1.6, y + 0.35), name: name, stroke: 0.6pt)
       content((-0.5, y), text(size: 9pt, body))
-      content((2.7, y), text(size: 8pt, fill: gray.darken(50%), raw(module)))
+      content((2.7, y), "")
     }
 
-    node(0, "gen", [Generate source data], "main")
-    node(-1.2, "reset", [Reset warehouse], "main")
-    node(-2.4, "run", [Run and measure subprocess], "measure")
-    node(-3.6, "check", [Validate run], "validation")
-    node(-4.8, "save", [Save result], "results")
-    node(-6.0, "oracle", [Compare with oracle], "validation")
+    node(0, "gen", [Generate source data])
+    node(-1.2, "reset", [Reset warehouse])
+    node(-2.4, "run", [Run and measure subprocess])
+    node(-3.6, "check", [Validate run])
+    node(-4.8, "save", [Save result])
+    node(-6.0, "oracle", [Compare with oracle])
 
     for (a, b) in (
       ("gen", "reset"),
