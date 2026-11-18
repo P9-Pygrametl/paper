@@ -46,4 +46,4 @@ waiting for individual responses~#cite(<postgres>). The server executes them in 
   caption: [Client activity over time for six statements. Time runs from left to right. Segment widths are illustrative and not to scale.],
 ) <fig-timeline>
 
-We evaluate three pipelined variants built on existing workflows: `Pipeline sequential`, `Pipeline multiprocessing` and `Pipeline free-threading`. All three use the pipelined connection wrapper. The first uses a single pipelined connection, the second uses one per worker process, and the third uses one per worker thread on free-threaded CPython `3.15t`.
+We evaluate three pipelined variants built on existing workflows: `Pipeline sequential`, `Pipeline multiprocessing` and `Pipeline free-threading`. All three use the pipelined connection wrapper. The first runs the `cpygrametl1_db` workflow with a single pipelined connection. The other two run the `cpygrametl2_db` workflow; the second with one pipelined connection per worker process and the third with one per worker thread on free-threaded CPython `3.15t`.
