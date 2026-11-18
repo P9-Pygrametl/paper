@@ -59,6 +59,7 @@
   #include "chapters/intro.typ"
   #include "chapters/relatedworks.typ"
   = Methods <Methods>
+  #include "chapters/multiprocessing.typ"
   #include "chapters/subvsmp.typ"
   #include "chapters/freethreading.typ"
   == Async
