@@ -61,7 +61,7 @@
   = Methods <Methods>
   #include "chapters/subvsmp.typ"
   == Free threading
-  == Async
+  #include "chapters/async.typ"
   #include "chapters/pipeline_mode.typ"
   #include "chapters/experiment.typ"
   = Results
