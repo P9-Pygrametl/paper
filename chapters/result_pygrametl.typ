@@ -107,6 +107,7 @@
     legend: none,
     width: width,
     height: height,
+    xaxis: (ticks: (25, 50, 75, 100), subticks: none),
     ..plots,
   )
 }
