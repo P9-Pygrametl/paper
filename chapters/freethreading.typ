@@ -1,0 +1,5 @@
+== Free Threading
+
+PEP 703 proposes to makes the GIL optional in CPython @PEP703 , allowing multiple threads to execute Python bytecode concurrently. We decided to use the free-threaded CPython build (`3.15t`) to disable the GIL and evaluate whether free-threading can eliminate the overhead of `multiprocessing` @PyFreeThreadingGuide. To retain the existing `multiprocessing` architecture, we extended the current implementation with Python's `threading` module @Python315ThreadingDocs when the GIL is disabled. This preserves full API compatibility with existing pygrametl workflows, automatically dispatching threads when the GIL is disabled while falling back to `multiprocessing` on GIL-enabled builds.
+
+For the evaluation, the CPython build (`3.15t`) was compiled with `--disable-gil` to remove the GIL and enable concurrent bytecode execution @Python315ConfigureDocs @PEP703. We also compiled the interpreter with `--enable-optimizations`, which profiles a representative workload across multiple build stages to optimize code paths, and `--with-lto`, which optimizes and inlines functions across separate C source files during linking @Python315ConfigureDocs.
