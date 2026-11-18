@@ -59,11 +59,13 @@
   #include "chapters/intro.typ"
   #include "chapters/relatedworks.typ"
   = Methods <Methods>
+  #include "chapters/multiprocessing.typ"
   #include "chapters/subvsmp.typ"
-  == Free threading
+  #include "chapters/freethreading.typ"
   #include "chapters/async.typ"
   #include "chapters/pipeline_mode.typ"
   #include "chapters/experiment.typ"
+  #include "chapters/benchmarking_harness.typ"
   = Results
   #include "chapters/result_pygrametl.typ"
   == Other

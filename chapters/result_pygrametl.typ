@@ -2,7 +2,7 @@
 
 #let csv-path = "../results/merged.csv"
 #let page-sizes = (25, 50, 75, 100)
-#let only-valid = false
+#let only-valid = true
 #let show-spread = false // error bars on charts
 #let table-spread = true // "mean ± std" in the table
 
@@ -42,6 +42,21 @@
   "pipeline multiprocessing": rgb("#E69F00"), // orange
   "pipeline sequential": rgb("#8C510A"), // brown
 )
+
+// ---------- Chart markers ----------
+#let impl-markers = (
+  cpygrametl1_db: "o",                   // circle
+  cpygrametl1_async_db: "s",             // square
+  cpygrametl2_db: "^",                   // triangle up
+  cpygrametl2_async_db: "d",             // diamond
+  jython1: "+",                          // plus
+  jython2: "x",                          // cross
+  "pipeline free-threading": "p5",       // pentagon
+  "pipeline multiprocessing": "v",       // triangle down
+  "pipeline sequential": "s5",           // five-point star
+)
+
+#let marker-of(group) = impl-markers.at(group.at(0), default: "o")
 
 #let color-of(group) = {
   let base = impl-colors.at(group.at(0), default: luma(120))
@@ -95,9 +110,20 @@
     let vals = pages.map(p => values-for(group, p, metric))
     let averages = vals.map(mean)
     if show-spread {
-      lq.plot(pages, averages, yerr: vals.map(std), mark: "o", color: color-of(group))
+      lq.plot(
+        pages,
+        averages,
+        yerr: vals.map(std),
+        mark: marker-of(group),
+        color: color-of(group),
+      )
     } else {
-      lq.plot(pages, averages, mark: "o", color: color-of(group))
+      lq.plot(
+        pages,
+        averages,
+        mark: marker-of(group),
+        color: color-of(group),
+      )
     }
   })
 
@@ -107,12 +133,21 @@
     legend: none,
     width: width,
     height: height,
+    xaxis: (ticks: (25, 50, 75, 100), subticks: none),
     ..plots,
   )
 }
 
 #let legend-diagram(width) = {
-  let plots = groups.map(group => lq.plot((), (), mark: "o", color: color-of(group), label: label-of(group)))
+  let plots = groups.map(group =>
+    lq.plot(
+      (),
+      (),
+      mark: marker-of(group),
+      color: color-of(group),
+      label: label-of(group),
+    )
+  )
 
   show lq.selector(lq.legend): set grid(columns: (auto,) * legend-columns, column-gutter: 1.2em)
   show lq.selector(lq.legend): set text(size: 8pt)
@@ -181,19 +216,19 @@
       dir: ttb,
       spacing: 0.8em,
       {
-        show: lq.layout // aligns the plot areas of the two diagrams
-        grid(
-          columns: 2,
-          column-gutter: chart-gutter,
-          metric-chart("wall_seconds", [Execution time (s)], w, chart-height),
-          metric-chart("cpu_seconds", [CPU time (s)], w, chart-height),
-        )
-      },
+  show: lq.layout
+  grid(
+    columns: 2,
+    column-gutter: chart-gutter,
+    metric-chart("wall_seconds", [Execution time (s)], w, chart-height),
+    metric-chart("cpu_seconds", [CPU time (s)], w, chart-height),
+  )
+},
       legend-diagram(size.width),
     )
   }),
   placement: top,
-  scope: "parent", // spans both columns
+  scope: "parent",
   caption: [Mean execution time (left) and mean total CPU time (right) by page size. Spread is given in @tab:summary.],
 ) <fig:time>
 
