@@ -62,7 +62,7 @@
   #include "chapters/multiprocessing.typ"
   #include "chapters/subvsmp.typ"
   #include "chapters/freethreading.typ"
-  == Async
+  #include "chapters/async.typ"
   #include "chapters/pipeline_mode.typ"
   #include "chapters/experiment.typ"
   #include "chapters/benchmarking_harness.typ"
