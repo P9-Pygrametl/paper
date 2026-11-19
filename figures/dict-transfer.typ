@@ -48,12 +48,6 @@
       dict-rows-per-second("mp_queue"),
       mark: "s",
       label: [Multiprocessing queue],
-    ),
-    lq.plot(
-      dict-columns,
-      dict-rows-per-second("mp_pipe"),
-      mark: "^",
-      label: [Multiprocessing pipe],
-    ),
+    )
   )
 }

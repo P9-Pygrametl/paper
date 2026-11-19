@@ -59,7 +59,7 @@
   #include "chapters/intro.typ"
   #include "chapters/relatedworks.typ"
   = Methods <Methods>
-  The methods address two distinct sources of overhead. We first examine how work is distributed among workers, comparing multiprocessing with subinterpreters and free-threaded threads, and then evaluate asynchronous extraction. We separately test PostgreSQL pipelining, which targets database round-trip waits rather than worker scheduling. All full ETL comparisons use the same star-schema workload and benchmark procedure.
+  The methods address two distinct sources of overhead. We first examine how work is distributed among workers, comparing multiprocessing with subinterpreters and free-threaded threads, and then evaluate asynchronous extraction. We test PostgreSQL pipeline mode, which targets database round-trip waits rather than worker scheduling.
   #include "chapters/multiprocessing.typ"
   #include "chapters/subvsmp.typ"
   #include "chapters/freethreading.typ"
@@ -69,7 +69,6 @@
   #include "chapters/benchmarking_harness.typ"
   = Results
   #include "chapters/result_pygrametl.typ"
-  #include "chapters/results_pipeline.typ"
   #include "chapters/conclusion.typ"
   #include "chapters/futurework.typ"
 

@@ -44,4 +44,4 @@ As shown in @fig-timeline, PostgreSQL pipeline mode lets a client send multiple 
   caption: [Client activity over time for six statements. Time runs from left to right. Segment widths are illustrative and not to scale.],
 ) <fig-timeline>
 
-We evaluate three variants, all using the wrapper: `Pipeline sequential` runs the sequential workflow with one pipelined connection; `Pipeline multiprocessing` uses one pipelined connection per worker process; and `Pipeline free-threading` uses one per worker thread on free-threaded CPython `3.15t`. This comparison tests whether pipelining helps independently and whether it combines with either worker model.
+//We evaluate three variants, all using the wrapper: `Pipeline sequential` runs the sequential workflow with one pipelined connection; `Pipeline multiprocessing` uses one pipelined connection per worker process; and `Pipeline free-threading` uses one per worker thread on free-threaded CPython `3.15t`. This comparison tests whether pipelining helps independently and whether it combines with either worker model.

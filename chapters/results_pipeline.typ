@@ -1,6 +1,0 @@
-
-== Pipeline-mode results
-
-The results support the distinction between worker parallelism and database wait time. At 100 pages, pipelining reduces sequential execution time from 113.6 s to 36.8 s, about a 3.1x speedup, while total CPU time falls from 44.7 s to 31.9 s. This indicates that the sequential gain comes from doing less waiting, not from using more CPU. Adding multiprocessing reduces wall time to 22.8 s; using free-threaded workers reduces it to 17.5 s, about 6.5x faster than the sequential baseline. These parallel pipeline variants use about 1.6 and 1.5 times the baseline CPU time, respectively, in exchange for lower wall time.
-
-The pipelined variants scale approximately linearly with page count. Their speedups are largest at 25 pages and taper slightly by 100 pages. Results are also less variable than the baseline, whose standard deviation at 100 pages is 12.1 s, compared with less than 0.3 s for each pipelined variant. However, three of the 120 `Pipeline free-threading` runs failed with segmentation faults, one each at page sizes 50, 75, and 100; these runs are excluded from the reported means. The speedup is therefore promising, but the observed crashes mean that this variant is not yet reliable.
