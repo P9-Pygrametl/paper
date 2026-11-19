@@ -1,10 +1,8 @@
 == Pipeline Mode
 
-pygrametl loads data row by row. Each `insert` call sends one `INSERT` statement to the database and waits for the reply. Because the reply carries nothing that subsequent inserts depend on, this wait is wasted. It dominates statement cost over remote connections and leaves the process largely idle. Existing parallel workflows in pygrametl only distribute this wait across workers rather than eliminating it.
+The preceding methods focus on how ETL work is scheduled. Pipeline mode addresses a different bottleneck: `pygrametl` loads data row by row, and each `insert` call normally waits for the database response before sending the next statement. For independent inserts, that round-trip wait does not contribute to the transformation and can leave the client idle. Parallel workers can overlap some of this waiting, but do not remove it.
 
-#ref(<fig-timeline>) illustrates PostgreSQL's pipeline mode which enables
-a client to send batches of statements without
-waiting for individual responses~#cite(<postgres>). The server executes them in order and the client reads results at explicit synchronization points. We implemented a `PipelinedConnectionWrapper` around a standard psycopg 3 connection to keep ETL code transferable from original pygrametl~#cite(<psycopg3>). Fire-and-forget statements such as `INSERT` are queued unanswered, while the wrapper synchronizes whenever a result is required (`SELECT` or `COMMIT`). Because PostgreSQL prohibits `COPY` inside a pipeline, the wrapper temporarily exits pipeline mode before a `COPY` and re-enters it afterward.
+As shown in @fig-timeline, PostgreSQL pipeline mode lets a client send multiple statements without waiting for each response @postgres. The server executes statements in order, and the client reads results at explicit synchronization points. We implemented a `PipelinedConnectionWrapper` around a psycopg 3 connection to use this mode without changing the ETL workflow @psycopg3. The wrapper queues statements such as `INSERT` and synchronizes when a result is needed, for example by a `SELECT` or `COMMIT`. Since PostgreSQL does not permit `COPY` inside a pipeline, the wrapper temporarily leaves pipeline mode for a `COPY` operation and re-enters it afterward.
 
 #figure(
   layout(avail => {
@@ -46,4 +44,4 @@ waiting for individual responses~#cite(<postgres>). The server executes them in 
   caption: [Client activity over time for six statements. Time runs from left to right. Segment widths are illustrative and not to scale.],
 ) <fig-timeline>
 
-We evaluate three pipelined variants built on existing workflows: `Pipeline sequential`, `Pipeline multiprocessing` and `Pipeline free-threading`. All three use the pipelined connection wrapper. The first runs the `cpygrametl1_db` workflow with a single pipelined connection. The other two run the `cpygrametl2_db` workflow; the second with one pipelined connection per worker process and the third with one per worker thread on free-threaded CPython `3.15t`.
+We evaluate three variants, all using the wrapper: `Pipeline sequential` runs the sequential workflow with one pipelined connection; `Pipeline multiprocessing` uses one pipelined connection per worker process; and `Pipeline free-threading` uses one per worker thread on free-threaded CPython `3.15t`. This comparison tests whether pipelining helps independently and whether it combines with either worker model.

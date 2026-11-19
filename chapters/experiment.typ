@@ -1,8 +1,7 @@
 = Experimental Setup
 == Star schema diagram
 #include "../figures/StarSchema.typ"
-To evaluate the parallelization methods described in @Methods, we use the same star schema (@fig-star-schema), data generator @Thomsen2011Exaprogs, and benchmark setup as #text(style: "italic")[ETLMR: A Highly Scalable Dimensional ETL
-  Framework Based on MapReduce] @Liu2011ETLMR and #text(style: "italic")[Easy and Effective Parallel Programmable ETL] @Pygrametl2011, allowing direct comparison with the parallel Jython @JythonProject implementation of pygrametl evaluated there.
+We use the star schema shown in @fig-star-schema, the data generator from @Thomsen2011Exaprogs, and a benchmark setup based on @Liu2011ETLMR and @Pygrametl2011. This follows the earlier evaluation of `pygrametl`'s parallel Jython implementation and provides a common workload for comparing the methods in this paper.
 == Hardware
 #figure(
   table(
@@ -19,6 +18,6 @@ To evaluate the parallelization methods described in @Methods, we use the same s
 )
 
 == General Setup
-The CPython implementations were run on CPython 3.15.1 (with the GIL) and the CPython 3.15.1 free-threading build (3.15t), both built with Clang 23.1.3. The Jython implementations were run on Jython 2.7.3 with OpenJDK 1.8.0_512 and the PostgreSQL JDBC driver 42.7.10, whereas the CPython environments use psycopg 3.3.5 (with psycopg-c 3.3.5).
+The CPython implementations ran on CPython 3.15.1 with the GIL and on a free-threaded CPython 3.15.1 build (`3.15t`), both compiled with Clang 23.1.3. The Jython implementations ran on Jython 2.7.3 with OpenJDK 1.8.0_512 and PostgreSQL JDBC driver 42.7.10. The CPython environments used psycopg 3.3.5 and psycopg-c 3.3.5.
 
-The source and data warehouse databases ran as two PostgreSQL 18.6 Docker containers with the default configuration on the same machine as the benchmark. Each configuration (page sizes 25 (1.125 M rows), 50 (2.25 M rows), 75 (3.375 M rows) and 100 (4.5M rows)) was run 30 times, in a freshly shuffled order within each repetition, with no warm-up.
+The source and warehouse databases ran in separate PostgreSQL 18.6 Docker containers with default configuration on the benchmark machine. We tested page sizes of 25, 50, 75, and 100, corresponding to 1.125, 2.25, 3.375, and 4.5 million fact rows. Each configuration was run 30 times in a freshly shuffled order, with no warm-up.

@@ -1,26 +1,6 @@
 
-//----- Pipeline Mode results -----
-#figure(
-  {
-    set text(size: 9pt)
-    table(
-      columns: (1fr, auto, auto, auto, auto),
-      inset: (x: 2.5pt, y: 4pt),
-      stroke: none,
-      align: (left, right, right, right, right),
-      table.hline(),
-      table.header[*Impl.*][*Wall (s)*][*Speedup*][*CPU (s)*][*CPU (%)*],
-      table.hline(stroke: 0.5pt),
-      [Baseline], [#box[111.9 #sym.plus.minus 12.1]], [1.0x], [44.4], [40.0],
-      [Sequential], [#box[36.8 #sym.plus.minus 0.3]], [3.0x], [31.9], [86.6],
-      [Multiprocessing], [#box[22.8 #sym.plus.minus 0.2]], [4.9x], [72.3], [317.3],
-      [Free-threading], [#box[17.5 #sym.plus.minus 0.2]], [6.4x], [66.4], [379.5],
-      table.hline(),
-    )
-  },
-  caption: [Mean wall time, standard deviation, CPU time, and utilization at 100 pages.],
-)
+== Pipeline-mode results
 
-Pipelining alone makes the sequential workflow 3.0x faster than `cpygrametl1_db` while cutting CPU time by 28 percent and raising CPU utilization from 40.0 to 86.6 percent as round-trip idle time disappears. Combining pipelining with parallelism reaches 4.9x speedup for multiprocessing and 6.4x for free-threading, trading 1.5x to 1.6x higher total CPU time for lower wall time.
+The results support the distinction between worker parallelism and database wait time. At 100 pages, pipelining reduces sequential execution time from 113.6 s to 36.8 s, about a 3.1x speedup, while total CPU time falls from 44.7 s to 31.9 s. This indicates that the sequential gain comes from doing less waiting, not from using more CPU. Adding multiprocessing reduces wall time to 22.8 s; using free-threaded workers reduces it to 17.5 s, about 6.5x faster than the sequential baseline. These parallel pipeline variants use about 1.6 and 1.5 times the baseline CPU time, respectively, in exchange for lower wall time.
 
-Run time scales linearly with page count across all pipelined variants, with speedups peaking at 25 pages (7.0x for free-threading) and tapering slightly by 100 pages (6.4x). Pipelining also eliminates timing jitter, dropping standard deviation at 100 pages from 12.1 seconds to under 0.3 seconds. Three of the 120 `Pipeline free-threading` runs crashed with a segmentation fault (one each at 50, 75, and 100 pages) and are excluded from the means above. The root cause remains under investigation.
+The pipelined variants scale approximately linearly with page count. Their speedups are largest at 25 pages and taper slightly by 100 pages. Results are also less variable than the baseline, whose standard deviation at 100 pages is 12.1 s, compared with less than 0.3 s for each pipelined variant. However, three of the 120 `Pipeline free-threading` runs failed with segmentation faults, one each at page sizes 50, 75, and 100; these runs are excluded from the reported means. The speedup is therefore promising, but the observed crashes mean that this variant is not yet reliable.

@@ -1,1 +1,3 @@
 = Future Work <FutureWork>
+
+The immediate priority is to identify and resolve the segmentation faults in the free-threaded pipeline variant, then repeat its measurements to establish reliability. Future evaluations should also test additional ETL workloads and database configurations, including remote databases where round-trip latency may make pipelining even more consequential. Measuring extraction-bound and transformation-heavy workloads would clarify when asynchronous prefetching or additional worker parallelism is useful. Finally, a full subinterpreter-based implementation could be reconsidered if its data-transfer costs can be reduced enough to make its memory and task-distribution advantages relevant to end-to-end ETL performance.

@@ -243,3 +243,7 @@
     size. CPU utilisation is relative to one core (100% = one fully used core).
   ],
 ) <tab:summary>
+
+At 100 pages, the sequential CPython baseline takes 113.6 s. Multiprocessing reduces this to 55.5 s, and multiprocessing with asynchronous extraction takes 52.9 s. The corresponding free-threaded multiprocessing variants take 46.4 s and 44.5 s. These results show that asynchronous extraction alone does not shorten the sequential workflow materially; its improvement is modest when combined with multiprocessing. Free-threaded workers reduce execution time further, but the additional speed comes with greater CPU use and memory consumption than the sequential baseline.
+
+The largest gains come from reducing database round trips. Pipeline mode brings the sequential workflow to 36.8 s, and combining it with multiprocessing and free-threading reduces execution time to 22.8 s and 17.5 s, respectively. The next section examines these pipeline results in detail, including the reliability issue observed in the free-threaded variant.
