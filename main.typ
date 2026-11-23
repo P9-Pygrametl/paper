@@ -1,3 +1,7 @@
+#import "@preview/abbr:0.3.1"
+#show: abbr.show-rule
+#include "abbr.typ"
+
 #import "lib.typ": project
 
 #set page(paper: "a4", margin: (x: 2cm, y: 2.5cm), numbering: "1")

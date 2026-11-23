@@ -1,12 +1,9 @@
-#import "/figures/dict-transfer.typ": dict-transfer
+#import "figures/dict-transfer.typ": dict-transfer
 
 // Tuning tables are derived from the trial log at compile time.
 #let tuning-rows = csv("results/tuning.csv", row-type: dictionary)
 #let tuning-search = tuning-rows.filter(row => (
-  row.knob != "final"
-    and int(row.pass_index) >= 1
-    and row.valid == "1"
-    and row.wall_seconds != ""
+  row.knob != "final" and int(row.pass_index) >= 1 and row.valid == "1" and row.wall_seconds != ""
 ))
 
 #let tuning-modes = {
@@ -90,45 +87,53 @@
   result
 }
 
-#let tuning-sensitivity-rows = tuning-modes.map(mode => {
-  let medians = tuning-stats.at(mode).map(config => config.median).sorted()
-  let best = medians.first()
-  let worst = medians.last()
-  let parts = mode.split("@")
-  (
-    tuning-impl-name(parts.at(0)),
-    tuning-runtime-name(parts.at(1)),
-    tuning-fmt(best),
-    tuning-fmt(tuning-median(medians)),
-    tuning-fmt(worst),
-    tuning-fmt(100 * (worst - best) / best, d: 0) + "%",
-  )
-}).flatten()
+#let tuning-sensitivity-rows = (
+  tuning-modes
+    .map(mode => {
+      let medians = tuning-stats.at(mode).map(config => config.median).sorted()
+      let best = medians.first()
+      let worst = medians.last()
+      let parts = mode.split("@")
+      (
+        tuning-impl-name(parts.at(0)),
+        tuning-runtime-name(parts.at(1)),
+        tuning-fmt(best),
+        tuning-fmt(tuning-median(medians)),
+        tuning-fmt(worst),
+        tuning-fmt(100 * (worst - best) / best, d: 0) + "%",
+      )
+    })
+    .flatten()
+)
 
-#let tuning-selected-rows = tuning-modes.map(mode => {
-  let parts = mode.split("@")
-  let impl = tuning-impl-name(parts.at(0))
-  let runtime = tuning-runtime-name(parts.at(1))
-  let configs = tuning-stats.at(mode).filter(config => config.n >= 4)
-  if configs.len() == 0 {
-    return (impl, runtime, "–", "–", "–", "–", "–")
-  }
+#let tuning-selected-rows = (
+  tuning-modes
+    .map(mode => {
+      let parts = mode.split("@")
+      let impl = tuning-impl-name(parts.at(0))
+      let runtime = tuning-runtime-name(parts.at(1))
+      let configs = tuning-stats.at(mode).filter(config => config.n >= 4)
+      if configs.len() == 0 {
+        return (impl, runtime, "–", "–", "–", "–", "–")
+      }
 
-  let best = configs.at(0)
-  for config in configs {
-    if config.median < best.median { best = config }
-  }
+      let best = configs.at(0)
+      for config in configs {
+        if config.median < best.median { best = config }
+      }
 
-  (
-    impl,
-    runtime,
-    tuning-param(best.params, "batchsize"),
-    tuning-param(best.params, "queuesize"),
-    tuning-param(best.params, "bulksize"),
-    tuning-param(best.params, "fetchsize"),
-    tuning-param(best.params, "heap"),
-  )
-}).flatten()
+      (
+        impl,
+        runtime,
+        tuning-param(best.params, "batchsize"),
+        tuning-param(best.params, "queuesize"),
+        tuning-param(best.params, "bulksize"),
+        tuning-param(best.params, "fetchsize"),
+        tuning-param(best.params, "heap"),
+      )
+    })
+    .flatten()
+)
 
 = Appendix
 == Appendix A: Dictionary Transfer
