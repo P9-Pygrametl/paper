@@ -1,7 +1,8 @@
 = Experimental Setup
-== Star schema diagram
+== Star Schema Diagram
 #include "../figures/StarSchema.typ"
-We use the star schema shown in @fig-star-schema, the data generator from @Thomsen2011Exaprogs, and a benchmark setup based on @Liu2011ETLMR and @Pygrametl2011. This follows the earlier evaluation of `pygrametl`'s parallel Jython implementation and provides a common workload for comparing the methods in this paper.
+We use the star schema shown in @fig-star-schema and the data generator, both from @Thomsen2011Exaprogs. The benchmark setup is based on @Pygrametl2011 and @Liu2011ETLMR. This follows the earlier evaluation of `pygrametl`'s parallel Jython implementation and provides a common workload for comparing the methods in this paper.
+
 == Hardware
 #figure(
   table(
