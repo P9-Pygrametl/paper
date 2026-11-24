@@ -1,5 +1,5 @@
 == Multiprocessing
-Standard CPython enforces a Global Interpreter Lock (GIL) @Python315GILDocs that prevents multiple threads from executing Python bytecode in parallel. The existing parallel implementation therefore uses `multiprocessing` in CPython. `pygrametl` also supports multithreading through Jython, which runs on the JVM, however, Jython is based on Python 2.7, while current `pygrametl` development targets Python 3.
+Standard CPython enforces a @GIL @Python315GILDocs that prevents multiple threads from executing Python bytecode in parallel. The existing parallel implementation therefore uses `multiprocessing` in CPython. `pygrametl` also supports multithreading through Jython, which runs on the @JVM, however, Jython is based on Python 2.7, while current `pygrametl` development targets Python 3.
 
 With `multiprocessing`, `pygrametl` starts separate processes using `fork`. Copy-on-write initially shares memory pages, but pages may be duplicated as processes modify their state. To distribute work, dimensions and fact tables are wrapped in `Decoupled` objects, each running in its own process. A `Decoupled` object enqueues batched method calls and immediately returns a `FutureResult` placeholder. When a decoupled fact table receives such a placeholder, its process retrieves the actual dimension key from the dimension process before inserting the fact.
 
