@@ -6,14 +6,6 @@
   row.knob != "final" and int(row.pass_index) >= 1 and row.valid == "1" and row.wall_seconds != ""
 ))
 
-#let tuning-modes = {
-  let modes = ()
-  for row in tuning-search {
-    if not modes.contains(row.mode) { modes.push(row.mode) }
-  }
-  modes.sorted()
-}
-
 #let tuning-impl-names = (
   cpygrametl1_db: "sequential",
   cpygrametl1_async_db: "sequential async",
@@ -28,6 +20,18 @@
 
 #let tuning-impl-name(name) = tuning-impl-names.at(name, default: name)
 #let tuning-runtime-name(name) = name.replace("cpython-", "").replace("jython-", "")
+
+#let tuning-modes = {
+  let modes = ()
+  for row in tuning-search {
+    if not modes.contains(row.mode) { modes.push(row.mode) }
+  }
+  modes.sorted(key: mode => {
+    let parts = mode.split("@")
+    (tuning-impl-name(parts.at(0)), tuning-runtime-name(parts.at(1)))
+  })
+}
+
 #let tuning-fmt(value, d: 1) = {
   let text = str(calc.round(value, digits: d))
   if d == 1 and not text.contains(".") { text = text + ".0" }

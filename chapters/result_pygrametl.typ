@@ -45,15 +45,15 @@
 
 // ---------- Chart markers ----------
 #let impl-markers = (
-  cpygrametl1_db: "o",                   // circle
-  cpygrametl1_async_db: "s",             // square
-  cpygrametl2_db: "^",                   // triangle up
-  cpygrametl2_async_db: "d",             // diamond
-  jython1: "+",                          // plus
-  jython2: "x",                          // cross
-  "pipeline free-threading": "p5",       // pentagon
-  "pipeline multiprocessing": "v",       // triangle down
-  "pipeline sequential": "s5",           // five-point star
+  cpygrametl1_db: "o", // circle
+  cpygrametl1_async_db: "s", // square
+  cpygrametl2_db: "^", // triangle up
+  cpygrametl2_async_db: "d", // diamond
+  jython1: "+", // plus
+  jython2: "x", // cross
+  "pipeline free-threading": "p5", // pentagon
+  "pipeline multiprocessing": "v", // triangle down
+  "pipeline sequential": "s5", // five-point star
 )
 
 #let marker-of(group) = impl-markers.at(group.at(0), default: "o")
@@ -80,7 +80,7 @@
     let group = (row.implementation, row.runtime)
     if not g.contains(group) { g.push(group) }
   }
-  g.sorted()
+  g.sorted(key: group => (impl-name(group.at(0)), runtime-name(group.at(1))))
 }
 
 // ---------- Helpers ----------
@@ -139,15 +139,13 @@
 }
 
 #let legend-diagram(width) = {
-  let plots = groups.map(group =>
-    lq.plot(
-      (),
-      (),
-      mark: marker-of(group),
-      color: color-of(group),
-      label: label-of(group),
-    )
-  )
+  let plots = groups.map(group => lq.plot(
+    (),
+    (),
+    mark: marker-of(group),
+    color: color-of(group),
+    label: label-of(group),
+  ))
 
   show lq.selector(lq.legend): set grid(columns: (auto,) * legend-columns, column-gutter: 1.2em)
   show lq.selector(lq.legend): set text(size: 8pt)
@@ -216,14 +214,14 @@
       dir: ttb,
       spacing: 0.8em,
       {
-  show: lq.layout
-  grid(
-    columns: 2,
-    column-gutter: chart-gutter,
-    metric-chart("wall_seconds", [Execution time (s)], w, chart-height),
-    metric-chart("cpu_seconds", [CPU time (s)], w, chart-height),
-  )
-},
+        show: lq.layout
+        grid(
+          columns: 2,
+          column-gutter: chart-gutter,
+          metric-chart("wall_seconds", [Execution time (s)], w, chart-height),
+          metric-chart("cpu_seconds", [CPU time (s)], w, chart-height),
+        )
+      },
       legend-diagram(size.width),
     )
   }),
@@ -251,3 +249,4 @@
 //The results support the distinction between worker parallelism and database wait time. At 100 pages, pipelining reduces sequential execution time from 113.6 s to 36.8 s, about a 3.1x speedup, while total CPU time falls from 44.7 s to 31.9 s. This indicates that the sequential gain comes from doing less waiting, not from using more CPU. Adding multiprocessing reduces wall time to 22.8 s; using free-threaded workers reduces it to 17.5 s, about 6.5x faster than the sequential baseline. These parallel pipeline variants use about 1.6 and 1.5 times the baseline CPU time, respectively, in exchange for lower wall time.
 
 //The pipelined variants scale approximately linearly with page count. Their speedups are largest at 25 pages and taper slightly by 100 pages. Results are also less variable than the baseline, whose standard deviation at 100 pages is 12.1 s, compared with less than 0.3 s for each pipelined variant. However, three of the 120 `Pipeline free-threading` runs failed with segmentation faults, one each at page sizes 50, 75, and 100; these runs are excluded from the reported means. The speedup is therefore promising, but the observed crashes mean that this variant is not yet reliable.
+
