@@ -7,4 +7,6 @@
   ("JDBC", "Java Database Connectivity"),
   ("PSS", "Proportional Set Size"),
   ("RSS", "Resident Set Size"),
+  ("PDI", "Pentaho Data Integration"),
+  ("IPC", "Inter-Process Communication")
 )
