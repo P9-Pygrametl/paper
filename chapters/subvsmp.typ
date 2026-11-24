@@ -1,5 +1,5 @@
 == Subinterpreters <subinterpreters>
-Python's subinterpreters provide another way to run isolated interpreters within one process @pep734. We use microbenchmarks to test whether they offer practical advantages over multiprocessing for workloads relevant to ETL.
+Python's subinterpreters provide another way to run isolated interpreters within one process @pep734. We use microbenchmarks to test whether they offer practical advantages over multiprocessing for workloads relevant to @ETL.
 
 We developed seven standalone microbenchmarks covering communication overhead, task distribution, shared identifier generation, CPU-bound scalability, memory consumption, and worker initialization. Each benchmark was repeated, and median execution times are reported. Where applicable, workers were reused to separate steady-state performance from initialization cost.
 
