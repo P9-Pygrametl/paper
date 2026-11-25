@@ -22,7 +22,13 @@
 ))
 
 // ---------- Helpers ----------
-#let fmt(v, d: 1) = str(calc.round(v, digits: d))
+#let fmt(v, d: 1) = {
+  let s = str(calc.round(v, digits: d))
+  if d == 0 { return s }
+  let parts = s.split(".")
+  let frac = if parts.len() > 1 { parts.at(1) } else { "" }
+  parts.at(0) + "." + frac + "0" * (d - frac.len())
+}
 
 #let mean(v) = v.sum() / v.len()
 

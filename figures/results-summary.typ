@@ -53,7 +53,6 @@
   caption: [
     Results at page size #table-page (mean ± sample standard deviation over
     30 runs). Speedup is the ratio of mean execution times relative to
-    #label-of(baseline). Peak PSS is the peak proportional set
-    size. CPU utilisation is relative to one core (100% = one fully used core).
+    #label-of(baseline). CPU utilisation is relative to one core (100% = one fully used core).
   ],
 ) <tab:summary>
