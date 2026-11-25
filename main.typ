@@ -62,9 +62,8 @@
   #include "chapters/abstract.typ"
   #include "chapters/intro.typ"
   #include "chapters/relatedworks.typ"
-  = Methods <Methods>
-  The methods address two distinct sources of overhead. We first examine how work is distributed among workers, comparing multiprocessing with subinterpreters and free-threaded threads, and then evaluate asynchronous extraction. We test PostgreSQL pipeline mode, which targets database round-trip waits rather than worker scheduling.
-  #include "chapters/multiprocessing.typ"
+  = Approaches to Performance Optimisation <Methods>
+  We investigate four approaches to improving the performance of pygrametl, addressing two distinct sources of overhead. Subinterpreters and free-threading are investigated as alternatives to the existing multiprocessing implementation. Asynchronous extraction and PostgreSQL pipeline mode instead target the time spent waiting for database operations.
   #include "chapters/subvsmp.typ"
   #include "chapters/freethreading.typ"
   #include "chapters/async.typ"

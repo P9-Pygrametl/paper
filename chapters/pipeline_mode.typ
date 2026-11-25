@@ -1,47 +1,13 @@
-#import "@preview/smartaref:0.1.2": Cref, cref
 == Pipeline Mode <pipeline_mode>
-#Cref[@multiprocessing @subinterpreters @freethreading @async] focus on how @ETL work is scheduled. Pipeline mode addresses a different bottleneck: `pygrametl` loads data row by row, and each `insert` call normally waits for the database response before sending the next statement. For independent inserts, that round-trip wait does not contribute to the transformation and can leave the client idle. Parallel workers can overlap some of this waiting, but do not remove it.
 
-As shown in @fig-timeline, PostgreSQL pipeline mode lets a client send multiple statements without waiting for each response @postgres. The server executes statements in order, and the client reads results at explicit synchronization points. We implemented a `PipelinedConnectionWrapper` around a psycopg 3 connection to use this mode without changing the @ETL workflow @psycopg3. The wrapper queues statements such as `INSERT` and synchronizes when a result is needed, for example by a `SELECT` or `COMMIT`. Since PostgreSQL does not permit `COPY` inside a pipeline, the wrapper temporarily leaves pipeline mode for a `COPY` operation and re-enters it afterward.
+When executing SQL statements synchronously, the client waits for a response from the database before issuing the next statement. In pygrametl, where data is often loaded row by row, this introduces repeated database round-trip waits. When subsequent statements do not depend on the results of previous statements, these waits can potentially be avoided.
 
-#figure(
-  layout(avail => {
-    let label-w = 1.8cm
-    let bar-w = avail.width - label-w
-    let unit = bar-w / 18 // 6 sends (1u each) + 6 waits (2u each) = 18 units
-    let seg(u, fill, body) = box(
-      width: u * unit,
-      height: 0.65cm,
-      fill: fill,
-      stroke: 0.5pt + white,
-      align(center + horizon, text(
-        size: 6.5pt,
-        fill: white,
-        weight: "bold",
-        body,
-      )),
-    )
-    let send = seg.with(1, rgb("#3498db"))
-    let wait = seg.with(2, rgb("#e74c3c"))
-    let sync = seg.with(2, rgb("#e67e22"))
+As illustrated in @fig-timeline, PostgreSQL pipeline mode allows multiple SQL statements to be sent to the database without waiting for individual responses @PostgreSQLPipelineDocs. The statements are still executed sequentially by the database, but the client can issue subsequent statements while previous statements are being processed. Synchronisation points are used when the client needs to wait for outstanding operations to complete.
 
-    grid(
-      columns: (label-w, 1fr),
-      row-gutter: 0.6em,
-      align: (left + horizon, left + horizon),
-      text(size: 8.5pt)[Sequential], stack(dir: ltr, ..range(6).map(_ => (send[S], wait[wait])).flatten()),
-      text(size: 8.5pt)[Pipelined], stack(dir: ltr, ..range(6).map(_ => send[S]), sync[sync]),
-    )
-    v(0.5em)
-    text(size: 7.5pt)[
-      #box(width: 0.5em, height: 0.5em, fill: rgb("#3498db")) send a statement
-      #h(0.8em)
-      #box(width: 0.5em, height: 0.5em, fill: rgb("#e74c3c")) wait for a reply
-      #h(0.8em)
-      #box(width: 0.5em, height: 0.5em, fill: rgb("#e67e22")) wait at a sync point
-    ]
-  }),
-  caption: [Client activity over time for six statements. Time runs from left to right. Segment widths are illustrative and not to scale.],
-) <fig-timeline>
+#include "../figures/pipeline-timeline.typ"
 
-//We evaluate three variants, all using the wrapper: `Pipeline sequential` runs the sequential workflow with one pipelined connection; `Pipeline multiprocessing` uses one pipelined connection per worker process; and `Pipeline free-threading` uses one per worker thread on free-threaded CPython `3.15t`. This comparison tests whether pipelining helps independently and whether it combines with either worker model.
+To support pipeline mode in pygrametl, we implemented a `PipelinedConnectionWrapper` using psycopg 3 @psycopg3. The wrapper extends the existing `ConnectionWrapper`, allowing pipeline mode to be used without restructuring the @ETL workflow. To identify statements expected to return rows, the wrapper checks whether the SQL statement begins with `SELECT` or `WITH`, or contains `RETURNING`. Synchronisation is performed when results are required, when committing a transaction or when the configurable `sync_threshold` is reached.
+
+The effectiveness of pipeline mode depends on how frequently synchronisation is required. In pygrametl, dimension cache misses require database lookups, which can force synchronisation. Prefilling dimension caches and providing sufficient cache capacity can therefore reduce the frequency of synchronisation.
+
+For bulk loading, pygrametl allows data to be loaded using database-specific functionality, such as PostgreSQL's `COPY` command. Since `COPY` is not supported within PostgreSQL pipeline mode @PostgreSQLPipelineDocs, requesting a raw cursor causes the wrapper to synchronise and temporarily exit pipeline mode. Pipeline mode is re-entered on the next call to `execute` or `executemany`.

@@ -7,4 +7,5 @@
   ("JDBC", "Java Database Connectivity"),
   ("PSS", "Proportional Set Size"),
   ("RSS", "Resident Set Size"),
+  ("FIFO", "First-In, First-Out"),
 )
