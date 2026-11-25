@@ -1,5 +1,6 @@
 #show list: set par(justify: false)
 #show list: set text(hyphenate: false)
+#show "SlowlyChangingDimension": it => raw(it.text)
 
 = Background
 This section introduces `pygrametl`, outlines the challenges of parallelizing @ETL workloads in Python, and describes how `pygrametl` currently supports parallel execution via `multiprocessing` in CPython and multithreading in Jython.
@@ -11,7 +12,7 @@ This section introduces `pygrametl`, outlines the challenges of parallelizing @E
 
 - *Database Connectivity:* `ConnectionWrapper` wraps PEP 249 database connections behind a uniform @RDBMS interface, translating `pyformat` SQL parameters into the target driver's native style and caching translated statements.
 - *Data Extraction:* Stream extractors such as `SQLSource` and `CSVSource` are standard Python iterables that yield row dictionaries and can be chained with wrappers that filter, join, or transform rows on the fly.
-- *Dimensional Loading:* The core table abstractions `Dimension` and `FactTable` model star and snowflake schemas through `lookup`, `insert`, and `ensure`. To reduce database overhead and maintain history, `CachedDimension` keeps keys in memory, `BatchFactTable` and `BulkFactTable` support batch and file-based bulk loading, and `SlowlyChangingDimension` automates Type 1 and Type 2 versioning.
+- *Dimensional Loading:* The core table abstractions `Dimension` and `FactTable` model star and snowflake schemas through `lookup`, `insert`, and `ensure`. To reduce database overhead and maintain history, `CachedDimension` keeps keys in memory, `BatchFactTable` and `BulkFactTable` support batch and file-based bulk loading, and @SCD automates Type 1 and Type 2 versioning.
 
 == Parallelism in Python <parallelism>
 
