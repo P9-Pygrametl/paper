@@ -106,7 +106,7 @@
     (),
     mark: marker-of(group),
     color: color-of(group),
-    label: label-of(group),
+    label: group-name(group),
   ))
 
   show lq.selector(lq.legend): set grid(columns: (auto,) * legend-columns, column-gutter: 1.2em)

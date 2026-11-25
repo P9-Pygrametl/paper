@@ -51,7 +51,18 @@
   if base.len() == 0 or v.len() == 0 { none } else { mean(base) / mean(v) }
 }
 
-#let label-of(group) = [#impl-name(group.at(0)) / #runtime-name(group.at(1))]
+#let group-name(group) = {
+  let base = impl-name(group.at(0))
+  let rt = runtime-name(group.at(1))
+
+  if rt.ends-with("t") {
+    base.replace("sequential", "sequential free-threading").replace("multiprocessing", "free-threading")
+  } else {
+    base
+  }
+}
+
+#let label-of(group) = [#group-name(group) / #runtime-name(group.at(1))]
 
 // ---------- Grouping and sorting ----------
 #let groups = {

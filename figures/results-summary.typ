@@ -27,8 +27,7 @@
 #let summary-table() = {
   let body = groups
     .map(group => (
-      [#impl-name(group.at(0))],
-      [#runtime-name(group.at(1))],
+      [#group-name(group)],
       metric-cell(group, "wall_seconds"),
       speedup-cell(group),
       metric-cell(group, "peak_pss_mb", d: 0),
@@ -37,11 +36,12 @@
     .flatten()
 
   set text(size: 10pt)
+  set par(justify: false)
   table(
-    columns: (1fr, auto, auto, auto, auto, auto),
-    align: (left, left, right, right, right, right),
-    inset: (x: 4pt, y: 3pt),
-    table.header[*Implementation*][*Runtime*][*Time (s)*][*Speedup (x)*][*Peak PSS (MB)*][*CPU util. (%)*],
+    columns: (1fr, auto, auto, auto, auto),
+    align: (left, right, right, right, right),
+    inset: (x: 3pt, y: 3pt),
+    table.header[*Implementation*][*Time (s)*][*Speedup ($times$)*][*Peak PSS (MB)*][*CPU util. (%)*],
     ..body,
   )
 }
@@ -53,6 +53,6 @@
   caption: [
     Results at page size #table-page (mean ± sample standard deviation over
     30 runs). Speedup is the ratio of mean execution times relative to
-    #label-of(baseline). CPU utilisation is relative to one core (100% = one fully used core).
+    `sequential`. CPU utilisation is relative to one core (100% = one fully used core).
   ],
 ) <tab:summary>
