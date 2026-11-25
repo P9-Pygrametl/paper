@@ -151,8 +151,12 @@
   table(
     columns: (1fr, auto, auto, auto, auto, auto),
     align: (left, left, right, right, right, right),
+    stroke: none,
+    table.hline(),
     table.header[*Implementation*][*Runtime*][*Best (s)*][*Median (s)*][*Worst (s)*][*Spread*],
+    table.hline(),
     ..tuning-sensitivity-rows,
+    table.hline(),
   ),
   caption: [
     Exploratory tuning sensitivity at 100 pages. Best, median and worst are
@@ -167,8 +171,12 @@
   table(
     columns: (1fr, auto, auto, auto, auto, auto, auto),
     align: (left, left, right, right, right, right, right),
+    stroke: none,
+    table.hline(),
     table.header[*Implementation*][*Runtime*][*Batch*][*Queue*][*Bulk*][*Fetch*][*Heap*],
+    table.hline(),
     ..tuning-selected-rows,
+    table.hline(),
   ),
   caption: [
     Configuration selected at 100 pages by the tuning procedure. Dashes
