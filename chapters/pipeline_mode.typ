@@ -2,7 +2,7 @@
 
 When executing SQL statements synchronously, the client waits for a response from the database before issuing the next statement. Executing multiple statements in this manner introduces repeated database round-trip waits. When subsequent statements do not depend on the results of previous statements, the client can issue them without waiting for individual responses.
 
-As illustrated in @fig-timeline, PostgreSQL pipeline mode allows multiple SQL statements to be sent to the data warehouse without waiting for individual responses @PostgreSQLPipelineDocs. The statements are still executed sequentially by the database, but the client can issue subsequent statements while previous statements are being processed.
+As illustrated in @fig-timeline, PostgreSQL pipeline mode allows multiple SQL statements to be sent to the data warehouse without waiting for individual responses @PostgreSQLPipelineDocs. The statements are still executed sequentially by the database, but the client can issue subsequent statements while previous statements are being processed. Synchronisation points are used when the client needs to wait for outstanding operations to complete.
 
 #include "../figures/pipeline-timeline.typ"
 
