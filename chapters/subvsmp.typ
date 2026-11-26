@@ -1,8 +1,19 @@
 == Subinterpreters <subinterpreters>
-Python's subinterpreters provide another way to run isolated interpreters within one process @pep734. We use microbenchmarks to test whether they offer practical advantages over multiprocessing for workloads relevant to @ETL.
 
-We developed seven standalone microbenchmarks covering communication overhead, task distribution, shared identifier generation, CPU-bound scalability, memory consumption, and worker initialization. Each benchmark was repeated, and median execution times are reported. Where applicable, workers were reused to separate steady-state performance from initialization cost.
+CPython supports multiple isolated interpreters within a single process. Both the main interpreter and subinterpreters are represented internally by the same `PyInterpreterState` structure, which maintains interpreter-specific state such as imported modules, built-in objects and garbage collection state @CPythonInterpreterState. Python 3.14 introduced the `concurrent.interpreters` module through PEP 734, providing a Python-level interface for creating and communicating between interpreters @pep734.
 
-With eight workers, both approaches achieved similar CPU-bound speedups. The advantage was not consistent across operations. For ten-column dictionaries, which resemble the row representation used by `pygrametl`, multiprocessing queues transferred about 267,000 rows per second, compared with 132,000 for subinterpreter queues, as shown in @fig:dict-transfer. The difference persisted across tested dictionary sizes. Initializing eight workers also took about 1.61 ms with process forking, compared with 31.46 ms for subinterpreters.
+As illustrated in @fig-execution-models, subinterpreters operate within a shared process address space, unlike multiprocessing, where each worker runs in a separate process. This motivates investigating how subinterpreters compare to multiprocessing in terms of worker initialisation, communication overhead and memory consumption. However, unlike free-threading, workers operate within isolated interpreters and cannot directly share most Python objects. This is particularly relevant to pygrametl, where rows represented as dictionaries are frequently transferred between workers.
 
-Taken together, the microbenchmarks shows a trade-off. Where subinterpreters improve task distribution and memory use, but are slower for dictionary transfer and worker initialization. Since using them would require substantial changes to the existing multiprocessing implementation, these results do not justify pursuing that rewrite.
+#include "../figures/execution-models.typ"
+
+Rather than adapting pygrametl's existing parallel architecture directly, we developed five standalone microbenchmarks to investigate the suitability of subinterpreters for parallel @ETL workflows:
+
+- *Data transport:* Transfer of different data types and payload sizes through queues and pipes.
+- *Task distribution:* Distribution of computational tasks among workers and collection of results.
+- *Dictionary transport:* Transfer of dictionaries with varying numbers of attributes, representing pygrametl rows, with results shown in @fig:dict-transfer.
+- *CPU scalability:* Parallel execution of CPU-bound row transformations.
+- *Initialisation:* Creation and termination costs of processes and subinterpreters.
+
+The experiments are conducted with up to eight workers, with each configuration repeated ten times to provide a statistical basis for comparing performance and assessing variability between runs. Where applicable, workers are initialised before timing and reused to separate workload execution from initialisation costs.
+
+While the microbenchmarks indicate benefits in task distribution and memory consumption, subinterpreters introduce greater overhead when transferring dictionaries and initialising interpreters. Integrating subinterpreters into pygrametl would require changes to worker management, communication between workers and the initialisation of objects within isolated interpreters. Given these required changes and the importance of dictionary transfer in pygrametl, we decided not to pursue a subinterpreter-based implementation.

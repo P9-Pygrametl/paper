@@ -198,10 +198,13 @@
   set text(size: 10pt)
   table(
     columns: (1fr, auto, auto, auto, auto, auto),
+    stroke: none,
     align: (left, left, right, right, right, right),
-    inset: (x: 4pt, y: 3pt),
+    table.hline(),
     table.header[*Implementation*][*Runtime*][*Time (s)*][*Speedup (×)*][*Peak PSS (MB)*][*CPU util. (%)*],
+    table.hline(),
     ..body,
+    table.hline(),
   )
 }
 
