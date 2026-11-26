@@ -70,8 +70,7 @@
   #include "chapters/pipeline_mode.typ"
   #include "chapters/experiment.typ"
   #include "chapters/benchmarking_harness.typ"
-  = Results
-  #include "chapters/result_pygrametl.typ"
+  #include "chapters/results.typ"
   #include "chapters/conclusion.typ"
   #include "chapters/futurework.typ"
 
