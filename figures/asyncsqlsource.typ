@@ -1,20 +1,16 @@
-#import "@preview/fletcher:0.5.8": diagram, edge, node
-
-// ── Colors ────────────────────────────────────────────
+// ── Colours ───────────────────────────────────────────
 #let c-dark = rgb("#17253a")
 #let c-line = rgb("#3c4654")
 #let c-green = rgb("#5b7a75")
 #let c-light = rgb("#f1f4f8")
-#let c-white = white
 
 // ── Components ────────────────────────────────────────
-#let card(title, subtitle, fill: c-dark, width: 100pt) = block(
-  width: width,
-  inset: 4pt,
+#let card(title, subtitle, fill: c-dark) = block(
+  width: 110pt,
+  height: 30pt,
   radius: 2pt,
   fill: fill,
-  stroke: 0.5pt + fill,
-  align(center)[
+  align(center + horizon)[
     #text(fill: white, weight: "bold", size: 7.5pt, title)
     #linebreak()
     #text(fill: white, size: 6.5pt, subtitle)
@@ -23,7 +19,7 @@
 
 #let batch-cell(label, empty: false) = block(
   width: 30pt,
-  inset: (x: 2pt, y: 4pt),
+  height: 17pt,
   radius: 1pt,
   fill: if empty { white } else { c-light },
   stroke: (
@@ -31,120 +27,152 @@
     thickness: 0.5pt,
     dash: if empty { (2pt, 2pt) } else { "solid" },
   ),
-  align(center)[
+  align(center + horizon)[
     #text(size: 6.5pt, fill: c-dark, label)
   ],
 )
 
 #let queue-card() = block(
   width: 150pt,
-  inset: 5pt,
+  height: 38pt,
   radius: 2pt,
   fill: white,
   stroke: 0.6pt + c-line,
   [
-    #align(center)[
-      #text(size: 7.5pt, weight: "bold")[
+    #place(top + center, dy: 5pt)[
+      #text(size: 7.5pt, weight: "bold", fill: c-dark)[
         Bounded `asyncio.Queue`
       ]
     ]
 
-    #v(3pt)
-
-    #grid(
-      columns: 4,
-      gutter: 3pt,
-      align: center,
-      batch-cell("Batch 1"), batch-cell("Batch 2"), batch-cell("Batch 3"), batch-cell("Empty", empty: true),
-    )
-
-    #v(3pt)
-
-    #align(center)[
-      #text(size: 6.5pt)[Example: `prefetch = 4`]
+    #place(top + center, dy: 16pt)[
+      #grid(
+        columns: 4,
+        gutter: 3pt,
+        align: center,
+        batch-cell("Batch 1"), batch-cell("Batch 2"), batch-cell("Batch 3"), batch-cell("Empty", empty: true),
+      )
     ]
   ],
 )
 
+// ── Arrow component ───────────────────────────────────
+#let arrow(x, y, length, up: false, dashed: false) = {
+  let s = (
+    paint: c-line,
+    thickness: 0.7pt,
+    dash: if dashed { (2pt, 2pt) } else { "solid" },
+  )
+
+  // Arrow shaft
+  place(
+    top + left,
+    dx: x,
+    dy: y,
+    line(
+      start: (0pt, 0pt),
+      end: (0pt, length),
+      stroke: s,
+    ),
+  )
+
+  // Arrowhead
+  place(
+    top + left,
+    dx: x - 2.5pt,
+    dy: if up { y } else { y + length - 3.5pt },
+    polygon(
+      ..if up {
+        ((0pt, 3.5pt), (2.5pt, 0pt), (5pt, 3.5pt))
+      } else {
+        ((0pt, 0pt), (2.5pt, 3.5pt), (5pt, 0pt))
+      },
+      fill: c-line,
+      stroke: none,
+    ),
+  )
+}
+
 // ── Figure ────────────────────────────────────────────
 #figure(
   align(center)[
-    #diagram(
-      spacing: (0pt, 12pt),
-      node-inset: 0pt,
-      node-stroke: none,
-      node-shape: rect,
-      node-defocus: 0,
-      node-outset: 0pt,
-      edge-stroke: 0.7pt + c-line,
+    #block(
+      width: 220pt,
+      height: 218pt,
+      [
+        // Event loop boundary
+        #place(top + left, dx: 25pt, dy: 57pt)[
+          #rect(
+            width: 170pt,
+            height: 159pt,
+            radius: 3pt,
+            stroke: (
+              paint: c-line,
+              thickness: 0.6pt,
+              dash: (3pt, 3pt),
+            ),
+          )
+        ]
 
-      node((0, 0), name: <db>, card(
-        "Source database",
-        "Query results",
-      )),
-
-      node((0, 1), name: <eventloop>, block(
-        width: 170pt,
-        inset: 6pt,
-        radius: 3pt,
-        stroke: (
-          paint: c-line,
-          thickness: 0.6pt,
-          dash: (3pt, 3pt),
-        ),
-        [
+        // Event loop label
+        #place(top + center, dy: 63pt)[
           #text(size: 7pt, weight: "bold")[
             `asyncio` event loop
           ]
+        ]
 
-          #v(4pt)
+        // Source database
+        #place(top + left, dx: 55pt, dy: 0pt)[
+          #card("Source database", "Query results")
+        ]
 
-          #align(center)[
-            #diagram(
-              spacing: (0pt, 15pt),
-              node-inset: 0pt,
-              node-stroke: none,
-              node-outset: 0pt,
-              node-shape: rect,
-              edge-stroke: 0.7pt + c-line,
+        // Producer task
+        #place(top + left, dx: 55pt, dy: 78pt)[
+          #card("Producer task", "Await next batch")
+        ]
 
-              node((0, 0), name: <producer>, card(
-                "Producer task",
-                "Fetch next batch",
-              )),
+        // Bounded queue
+        #place(top + left, dx: 35pt, dy: 124pt)[
+          #queue-card()
+        ]
 
-              node((0, 1), name: <queue>, queue-card()),
+        // Consumer task
+        #place(top + left, dx: 55pt, dy: 178pt)[
+          #card(
+            "Consumer task",
+            "Consume rows",
+            fill: c-green,
+          )
+        ]
 
-              node((0, 2), name: <consumer>, card(
-                "Consumer task",
-                "Consume rows",
-                fill: c-green,
-              )),
+        // Producer → Database
+        #arrow(65pt, 30pt, 48pt, up: true)
 
-              edge(
-                <producer>,
-                <queue>,
-                "->",
-                label: text(size: 6.5pt)[`await put()`],
-              ),
+        #place(top + left, dx: 14pt, dy: 39pt)[
+          #text(size: 6.5pt)[Fetch request]
+        ]
 
-              edge(
-                <queue>,
-                <consumer>,
-                "->",
-                label: text(size: 6.5pt)[`await get()`],
-              ),
-            )
-          ]
-        ],
-      )),
+        // Database → Producer
+        #arrow(155pt, 30pt, 48pt)
 
-      edge(
-        <db>,
-        <eventloop>,
-        "->",
-        label: text(size: 6.5pt)[Async fetch],
-      ),
+        #place(top + left, dx: 160pt, dy: 39pt)[
+          #text(size: 6.5pt)[Retrieved batch]
+        ]
+
+        // Producer → Queue
+        #arrow(110pt, 108pt, 16pt)
+
+        #place(top + left, dx: 116pt, dy: 111pt)[
+          #text(size: 6.5pt)[`await put()`]
+        ]
+
+        // Queue → Consumer
+        #arrow(110pt, 162pt, 16pt)
+
+        #place(top + left, dx: 116pt, dy: 165pt)[
+          #text(size: 6.5pt)[`await get()`]
+        ]
+      ],
     )
   ],
   kind: image,
