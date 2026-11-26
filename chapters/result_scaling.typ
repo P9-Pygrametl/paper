@@ -1,4 +1,5 @@
 #import "@preview/lilaq:0.6.0" as lq
+#import "../helpers/results-common.typ": *
 
 #let scaling-path = "../results/scaling.csv"
 #let page-size = 100
@@ -9,22 +10,6 @@
 #let rows = raw-data.filter(row => (
   row.valid == "1" and row.returncode == "0" and int(row.pages) == page-size
 ))
-
-#let impl-names = (
-  cpygrametl1_db: "sequential",
-  cpygrametl1_async_db: "sequential async",
-  cpygrametl2_db: "multiprocessing",
-  cpygrametl2_async_db: "multiprocessing async",
-  jython1: "jython sequential",
-  jython2: "jython multiprocessing",
-  "pipeline sequential": "pipeline sequential",
-  "pipeline multiprocessing": "pipeline multiprocessing",
-  "pipeline free-threading": "pipeline free-threading",
-)
-
-#let impl-name(name) = impl-names.at(name, default: name)
-#let runtime-name(runtime) = runtime.replace("cpython-", "").replace("jython-", "")
-#let label-of(group) = [#impl-name(group.at(0)) / #runtime-name(group.at(1))]
 
 #let impl-colors = (
   cpygrametl1_db: rgb("#0072B2"),
@@ -50,16 +35,27 @@
   "pipeline sequential": "s5",
 )
 
+#let group-markers = (
+  "cpygrametl2_db/cpython-3.15t": "x",
+  "cpygrametl1_db/cpython-3.15t": "s5",
+  "cpygrametl1_async_db/cpython-3.15t": "v",
+)
+
+#let key-of(group) = group.at(0) + "/" + group.at(1)
+
+#let marker-of(group) = group-markers.at(
+  key-of(group),
+  default: impl-markers.at(group.at(0), default: "o"),
+)
+
 #let color-of(group) = {
   let base = impl-colors.at(group.at(0), default: luma(120))
   if group.at(0).starts-with("cpygrametl") and group.at(1).ends-with("t") {
-    base.lighten(35%)
+    base.lighten(45%)
   } else {
     base
   }
 }
-
-#let marker-of(group) = impl-markers.at(group.at(0), default: "o")
 
 #let all-groups = {
   let result = ()
@@ -67,7 +63,7 @@
     let group = (row.implementation, row.runtime)
     if not result.contains(group) { result.push(group) }
   }
-  result.sorted(key: group => (impl-name(group.at(0)), runtime-name(group.at(1))))
+  result.sorted(key: group => (group-name(group), runtime-name(group.at(1))))
 }
 
 // All implementation/runtime combinations from the scaling results.
@@ -105,7 +101,7 @@
 #let metric-cell(group, cores) = {
   let v = values-for(group, cores, "wall_seconds")
   if v.len() == 0 {
-    [–]
+    [-]
   } else {
     [#fmt(mean(v)) ± #fmt(std(v))]
   }
@@ -120,7 +116,7 @@
 #let speedup-cell(group, cores) = {
   let speedup = speedup-of(group, cores)
   if speedup == none {
-    [–]
+    [-]
   } else {
     [#fmt(speedup, d: 2) ×]
   }
@@ -165,7 +161,7 @@
 
   lq.diagram(
     xlabel: [Available P-cores],
-    ylabel: [Speedup (×)],
+    ylabel: [Speedup (x)],
     legend: none,
     width: 100%,
     height: 7cm,
@@ -190,7 +186,7 @@
 
   lq.diagram(
     width: 100%,
-    height: 3cm,
+    height: 2cm,
     xaxis: none,
     yaxis: none,
     legend: (position: top + center),
