@@ -2,7 +2,6 @@
 == Asynchronous ETL <async>
 
 While multiprocessing and free-threading aim to improve @ETL performance through parallel execution, asynchronous programming allows operations that would otherwise be performed sequentially to overlap. In Python, the `async` and `await` keywords and the `asyncio` module support cooperative scheduling, where an event loop can execute other tasks while a task is suspended awaiting an operation @Python315AsyncioTasksDocs.
-//Do something with "cooperative"
 
 In pygrametl, the existing `SQLSource` performs data extraction synchronously, meaning that the consuming task must wait whenever additional data is retrieved from the database. During this time, the consuming task cannot perform any transformation or loading operations. By introducing asynchronous extraction, we aim to reduce this waiting time by prefetching data while previously retrieved rows are being processed.
 
