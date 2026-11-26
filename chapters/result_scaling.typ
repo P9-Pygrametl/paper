@@ -198,42 +198,15 @@
   )
 }
 == CPU-Core Scaling
-To measure how the implementations use additional CPU cores, we pin the
-entire ETL process tree to physical P-cores with `taskset` and PostgreSQL to
-the E-cores. The database therefore does not compete with the ETL workers for
-P-cores. @fig:scaling shows speedup at page size 100 for 1, 2, 4, and 8
-P-cores, relative to each implementation's own one-core measurement. A
-one-core run is the same implementation restricted to one P-core. Each
-configuration uses its tuned parameters; @tab:scaling gives absolute means
-and standard deviations.
+To measure how the implementations use additional CPU cores, we pin the entire ETL process tree to physical P-cores with `taskset` and PostgreSQL to the E-cores. The database therefore does not compete with the ETL workers for P-cores. @fig:scaling shows speedup at page size 100 for 1, 2, 4, and 8,P-cores, relative to each implementation's own one-core measurement. A one-core run is the same implementation restricted to one P-core. Each configuration uses its tuned parameters. @tab:scaling gives absolute means and standard deviations.
 
-The parallel pipeline variants gain most of their speed by four cores.
-Pipeline multiprocessing reaches 3.08x at four cores and 3.17x at eight;
-free-threading reaches 2.77x and 3.24x. The last four cores add little, and
-neither configuration fills all eight P-cores.
+The parallel pipeline variants gain most of their speed by four cores. Pipeline multiprocessing reaches 3.08x at four cores and 3.17x at eight, while free-threading reaches 2.77x and 3.24x. The last four cores add little, and neither configuration fills all eight P-cores.
 
-The cpygrametl multiprocessing configurations on CPython 3.15 peak at four
-cores. Multiprocessing reaches 1.96x at four cores but falls to 1.31x at
-eight; the async variant peaks at 2.08x and falls to 1.83x. At eight cores,
-the workers use less than two cores of CPU, so they are waiting rather than
-saturating the P-cores. The 3.15t configurations keep improving through eight
-cores. Their one-core baselines are much faster, so the speedups understate
-their absolute advantage. Because the runtimes use different tuned
-parameters, this is not a clean comparison.
+The multiprocessing implementation peak at four cores. Multiprocessing reaches 1.96x at four cores but falls to 1.31x at eight, while the async variant peaks at 2.08x and falls to 1.83x. At eight cores, the workers use less than two cores of CPU, so they are waiting rather than saturating the P-cores. The 3.15t configurations keep improving through eight cores. Their one-core baselines are much faster, so the speedups understate their absolute advantage. Because the runtimes use different tuned parameters, this is not a clean comparison.
 
-Jython sequential, nominally single-threaded, also speeds up substantially,
-reaching 2.00x at eight cores. Its CPU utilisation rises above one core and
-its memory footprint grows to several gigabytes, so the process is not
-limited to one core. This is likely because the JVM, garbage collector, and
-JDBC connection wrapper use background threads, and the benchmark pins the
-process tree rather than a single thread; we did not isolate their
-contribution. Jython multiprocessing reaches 3.53x at eight cores, the
-largest relative gain, but uses roughly 20x the memory of cpygrametl 3.15t.
+Jython sequential, which is namely single-threaded, also speeds up substantially, reaching 2.00x at eight cores. Its CPU utilisation rises above one core and its memory footprint grows to several gigabytes, so the process is not limited to one core. This is likely because the JVM, garbage collector, and JDBC connection wrapper use background threads, and the benchmark pins the process tree rather than a single thread. We did not isolate their contribution. Jython multiprocessing reaches 3.53x at eight cores, the largest relative gain, but uses roughly 20x the memory of every CPython implementation.
 
-The flattening and regression at four to eight P-cores therefore point to
-database throughput or coordination rather than P-core contention. All runs
-passed validation. Absolute times are not directly comparable to the
-page-size results because the affinity setup and run counts differ.
+The flattening and regression at four to eight P-cores therefore point to database throughput or coordination rather than P-core contention. All runs passed validation. Absolute times are not directly comparable to the page-size results because the affinity setup and run counts differ.
 
 #figure(
   layout(size => stack(
