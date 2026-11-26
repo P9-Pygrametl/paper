@@ -180,7 +180,7 @@
     label: label-of(group),
   ))
 
-  show lq.selector(lq.legend): set grid(columns: (auto,) * 4, column-gutter: 1.2em)
+  show lq.selector(lq.legend): set grid(columns: (auto,) * 6, column-gutter: 1.2em)
   show lq.selector(lq.legend): set text(size: 8pt)
   show: lq.set-grid(stroke: none)
 
