@@ -198,15 +198,42 @@
   )
 }
 == CPU-Core Scaling
-To measure how the implementations use additional CPU cores, we pin the entire ETL process tree to physical P-cores with `taskset`. @fig:scaling shows speedup at page size 100 as the ETL process tree is restricted to 1, 2, 4, or 8 P-cores, relative to each implementation's own one-core measurement. The ETL tree is pinned to the P-cores (CPU 0–7) and PostgreSQL to the twelve E-cores (CPU 8–19), so the database has a separate CPU pool and does not compete with the ETL workers for P-cores. A one-core run is the same implementation restricted to one P-core. Each configuration uses its tuned parameters and 10 repetitions per core count; @tab:scaling gives absolute means and standard deviations. The relevant comparison is how much each configuration gains from additional client cores, not which configuration is fastest at a fixed core count.
+To measure how the implementations use additional CPU cores, we pin the
+entire ETL process tree to physical P-cores with `taskset` and PostgreSQL to
+the E-cores. The database therefore does not compete with the ETL workers for
+P-cores. @fig:scaling shows speedup at page size 100 for 1, 2, 4, and 8
+P-cores, relative to each implementation's own one-core measurement. A
+one-core run is the same implementation restricted to one P-core. Each
+configuration uses its tuned parameters; @tab:scaling gives absolute means
+and standard deviations.
 
-The parallel pipeline variants gain most of their speed by four cores. Pipeline multiprocessing goes from 63.9~s at one core to 20.7~s at four and 20.2~s at eight, speedups of 3.08x and 3.17x. Free-threading goes from 55.6~s to 20.0~s and 17.1~s, speedups of 2.77x and 3.24x. The last four cores improve wall time by only 2.5% and 14.5%, and eight-core efficiency is about 40%. CPU utilisation reaches only 306% and 388%, so neither configuration fills all eight P-cores.
+The parallel pipeline variants gain most of their speed by four cores.
+Pipeline multiprocessing reaches 3.08x at four cores and 3.17x at eight;
+free-threading reaches 2.77x and 3.24x. The last four cores add little, and
+neither configuration fills all eight P-cores.
 
-The cpygrametl multiprocessing configurations on CPython 3.15 peak at four cores. Multiprocessing improves from 133.8~s at one core to 68.4~s at four, a 1.96x speedup, but regresses to 102.3~s at eight, or 1.31x. The async variant goes from 136.3~s to 65.5~s at four and 74.4~s at eight, or 2.08x and 1.83x. CPU utilisation at eight cores falls to 93% and 120%, so the workers are waiting rather than saturating the P-cores. The 3.15t configurations keep improving to 51.5~s and 49.1~s, or 1.55x and 1.66x. Their one-core baselines are much faster, so the speedups understate their absolute advantage. Because the runtimes use different tuned parameters, this is not a clean comparison.
+The cpygrametl multiprocessing configurations on CPython 3.15 peak at four
+cores. Multiprocessing reaches 1.96x at four cores but falls to 1.31x at
+eight; the async variant peaks at 2.08x and falls to 1.83x. At eight cores,
+the workers use less than two cores of CPU, so they are waiting rather than
+saturating the P-cores. The 3.15t configurations keep improving through eight
+cores. Their one-core baselines are much faster, so the speedups understate
+their absolute advantage. Because the runtimes use different tuned
+parameters, this is not a clean comparison.
 
-Jython sequential, nominally single-threaded, also speeds up substantially: it drops from 127.3~s at one core to 66.8~s at two and 63.5~s at eight, a 2.00x speedup. Its CPU utilisation rises from 68% to 129% and its PSS from 1.1~GB to 3.6~GB, so the process is not limited to one core. This is likely because the JVM, garbage collector, and JDBC connection wrapper use background threads, and the benchmark pins the process tree rather than a single thread; we did not isolate their contribution. Jython multiprocessing scales further, to 51.0~s at eight, a 3.53x speedup and the largest relative gain, but uses 3.7~GB PSS against 0.19~GB for cpygrametl 3.15t.
+Jython sequential, nominally single-threaded, also speeds up substantially,
+reaching 2.00x at eight cores. Its CPU utilisation rises above one core and
+its memory footprint grows to several gigabytes, so the process is not
+limited to one core. This is likely because the JVM, garbage collector, and
+JDBC connection wrapper use background threads, and the benchmark pins the
+process tree rather than a single thread; we did not isolate their
+contribution. Jython multiprocessing reaches 3.53x at eight cores, the
+largest relative gain, but uses roughly 20x the memory of cpygrametl 3.15t.
 
-The flattening and regression at four to eight P-cores therefore point to database throughput or coordination rather than P-core contention. All 520 runs passed validation, with 10 repetitions per configuration and core count. Absolute times are not directly comparable to the page-size results because the affinity setup and run counts differ.
+The flattening and regression at four to eight P-cores therefore point to
+database throughput or coordination rather than P-core contention. All runs
+passed validation. Absolute times are not directly comparable to the
+page-size results because the affinity setup and run counts differ.
 
 #figure(
   layout(size => stack(
