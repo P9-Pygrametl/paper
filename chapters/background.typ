@@ -5,7 +5,6 @@
 = Background
 This section introduces `pygrametl`, outlines the challenges of parallelizing @ETL workloads in Python, and describes how `pygrametl` currently supports parallel execution via `multiprocessing` in CPython and multithreading in Jython.
 == Pygrametl
-
 `pygrametl` is an open-source Python framework for programmatic @ETL development @Pygrametl2011. Unlike GUI-based @ETL tools such as @PDI @PentahoDataIntegration, `pygrametl` expresses workflows directly in Python, giving developers programmatic control and access to Python's ecosystem. Rows are represented uniformly as Python `dict` objects mapping attribute names to values, so pipeline stages are not coupled to a fixed schema.
 
 `pygrametl` organizes its abstractions in three layers:
@@ -25,13 +24,9 @@ ETL pipelines combine I/O-bound database and file operations with CPU-bound row 
 - *Partitioned Table Execution:* `DimensionPartitioner` and `FactTablePartitioner` distribute bottleneck tables across multiple decoupled workers using hash partitioning and blocks of unique keys allocated by a shared `getsharedsequencefactory`.
 
 === Multiprocessing <multiprocessing>
-
-`pygrametl` implements the abstractions above with `multiprocessing`, using processes to bypass the @GIL while keeping sequential @ETL logic largely unchanged @Pygrametl2011. Its parallel execution mechanisms in CPython rely on the fork start method, which must be available and configured in the execution environment @Pygrametl2011. A new process created as a copy of the caller, including its address space and open file descriptors, so workers inherit the table objects and caches, and memory pages are shared copy-on-write until either process writes to them. In practice, this sharing is limited because CPython updates reference counts whenever these inherited objects are accessed, which copies the affected pages, so memory use grows with the number of processes.
-
-`fork` avoids re-importing modules in the new process, but it is unavailable on Windows, so `pygrametl` is restricted to UNIX-like systems. Because processes do not share memory, row dictionaries and surrogate keys must be serialized and sent over @IPC queues.
+`pygrametl` implements the abstractions above with `multiprocessing`, using processes to bypass the @GIL while keeping sequential @ETL logic largely unchanged @Pygrametl2011. Its parallel execution mechanisms in CPython rely on the fork start method, which must be available and configured in the execution environment @Pygrametl2011. A new process created is a copy of the caller, including its address space and open file descriptors, so workers inherit the table objects and caches, and memory pages are shared copy-on-write until either process writes to them. In practice, this sharing is limited because CPython updates reference counts whenever these inherited objects are accessed, which copies the affected pages, so memory use grows with the number of processes. `fork` avoids re-importing modules in the new process, but it is unavailable on Windows. Consequently, `pygrametl` is restricted to UNIX-like systems, but considered unsafe on macOS @PythonMultiprocessingDocs. Because processes do not share memory, row dictionaries and surrogate keys must be serialized and sent over @IPC queues.
 
 === Jython <jython>
-
 `pygrametl` also supports multithreading through Jython, which runs the same abstractions on the @JVM without a @GIL, so threads share row dictionaries and dimension caches directly in memory @Pygrametl2011. A compatibility layer, `jythonmultiprocessing`, implements `Process`, `Queue`, and `JoinableQueue` with threads and in-memory queues, so the same code runs unchanged. `JDBCConnectionWrapper` adapts @JDBC drivers to the `ConnectionWrapper` interface, disables auto-commit, caches prepared statements, and translates pyformat parameters to JDBC placeholders.
 
 Even though threads share memory, stages still exchange rows through queues as in the multiprocessing backend, so Jython avoids serialization but still pays for queue traffic.
