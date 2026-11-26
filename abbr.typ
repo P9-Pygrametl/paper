@@ -8,4 +8,7 @@
   ("PSS", "Proportional Set Size"),
   ("RSS", "Resident Set Size"),
   ("PDI", "Pentaho Data Integration"),
+  ("IPC", "Inter-Process Communication"),
+  ("RDBMS", "Relational Database Management System"),
+  ("SCD", "SlowlyChangingDimension")
 )
