@@ -1,4 +1,4 @@
-#import "../helpers/results-common.typ": group-name
+#import "../helpers/results-common.typ": *
 
 // Tuning tables are derived from the trial log at compile time.
 #let tuning-rows = csv("../results/tuning.csv", row-type: dictionary)
@@ -88,6 +88,7 @@
       let worst = medians.last()
       (
         mode-name(mode),
+        runtime-name(mode-group(mode).at(1)),
         tuning-fmt(best),
         tuning-fmt(tuning-median(medians)),
         tuning-fmt(worst),
@@ -113,6 +114,7 @@
 
       (
         name,
+        runtime-name(mode-group(mode).at(1)),
         tuning-param(best.params, "batchsize"),
         tuning-param(best.params, "queuesize"),
         tuning-param(best.params, "bulksize"),
@@ -127,10 +129,14 @@
 #let tuning-sensitivity-figure() = [
   #figure(
     table(
-      columns: (1fr, auto, auto, auto, auto),
-      align: (left, right, right, right, right),
-      table.header[*Implementation*][*Best (s)*][*Median (s)*][*Worst (s)*][*Spread*],
+      columns: (1fr, auto, auto, auto, auto, auto),
+      align: (left, left, right, right, right, right),
+      stroke: none,
+      table.hline(),
+      table.header[*Implementation*][*Runtime*][*Best (s)*][*Median (s)*][*Worst (s)*][*Spread*],
+      table.hline(),
       ..tuning-sensitivity-rows,
+      table.hline(),
     ),
     caption: [
       Exploratory tuning sensitivity at 100 pages. Best, median and worst are
@@ -144,10 +150,14 @@
 #let tuning-selected-figure() = [
   #figure(
     table(
-      columns: (1fr, auto, auto, auto, auto, auto),
-      align: (left, right, right, right, right, right),
-      table.header[*Implementation*][*Batch*][*Queue*][*Bulk*][*Fetch*][*Heap*],
+      columns: (1fr, auto, auto, auto, auto, auto, auto),
+      align: (left, left, right, right, right, right, right),
+      stroke: none,
+      table.hline(),
+      table.header[*Implementation*][*Runtime*][*Batch*][*Queue*][*Bulk*][*Fetch*][*Heap*],
+      table.hline(),
       ..tuning-selected-rows,
+      table.hline(),
     ),
     caption: [
       Configuration selected at 100 pages by the tuning procedure. Dashes

@@ -28,6 +28,7 @@
   let body = groups
     .map(group => (
       [#group-name(group)],
+      [#runtime-name(group.at(1))],
       metric-cell(group, "wall_seconds"),
       speedup-cell(group),
       metric-cell(group, "peak_pss_mb", d: 0),
@@ -38,11 +39,14 @@
   set text(size: 10pt)
   set par(justify: false)
   table(
-    columns: (1fr, auto, auto, auto, auto),
-    align: (left, right, right, right, right),
-    inset: (x: 3pt, y: 3pt),
-    table.header[*Implementation*][*Time (s)*][*Speedup ($times$)*][*Peak PSS (MB)*][*CPU util. (%)*],
+    columns: (1fr, auto, auto, auto, auto, auto),
+    stroke: none,
+    align: (left, left, right, right, right, right),
+    table.hline(),
+    table.header[*Implementation*][*Runtime*][*Time (s)*][*Speedup (x)*][*Peak PSS (MB)*][*CPU util. (%)*],
+    table.hline(),
     ..body,
+    table.hline(),
   )
 }
 
