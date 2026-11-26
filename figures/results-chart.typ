@@ -9,7 +9,7 @@
 #let chart-gutter = 0.5cm // gap between the two charts
 #let chart-height = 7.5cm
 #let legend-columns = 6
-#let legend-height = 2.6cm // room reserved for the legend below the charts
+#let legend-height = 2cm // room reserved for the legend below the charts
 
 // ---------- Colors ----------
 #let impl-colors = (
@@ -46,6 +46,8 @@
   // "cpygrametl2_db/cpython-3.15t": rgb("#B2182B"),
 )
 
+#let chart-groups = groups.sorted(key: group => (group-name(group), runtime-name(group.at(1))))
+
 #let key-of(group) = group.at(0) + "/" + group.at(1)
 
 #let marker-of(group) = group-markers.at(
@@ -67,7 +69,7 @@
 
 // ---------- Chart ----------
 #let metric-chart(metric, y-label, width, height) = {
-  let plots = groups.map(group => {
+  let plots = chart-groups.map(group => {
     let pages = page-sizes.filter(p => values-for(group, p, metric).len() > 0)
     let vals = pages.map(p => values-for(group, p, metric))
     let averages = vals.map(mean)
@@ -101,7 +103,7 @@
 }
 
 #let legend-diagram(width) = {
-  let plots = groups.map(group => lq.plot(
+  let plots = chart-groups.map(group => lq.plot(
     (),
     (),
     mark: marker-of(group),

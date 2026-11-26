@@ -23,3 +23,5 @@ Across all three execution modes, pipelining multiplies performance by roughly t
 #include "../figures/results-chart.typ"
 
 The headline speedups of the parallel variants partly reflect higher multi-core utilisation rather than proportional per-core efficiency. @fig:time illustrates this trade-off across page sizes for both wall-clock execution time and total CPU time. While execution time grows roughly linearly and the pipelined variants maintain top speedups across all page sizes, 6.7 to 7.5x, 4.8 to 5.1x, and about 3.0 to 3.2x, the total CPU time panel shows that every parallel variant requires more aggregate CPU time than the sequential baseline. Pipelined sequential execution is the only variant that substantially lowers total CPU time, consistent with removing idle waiting without adding parallel coordination overhead.
+
+#include "result_scaling.typ"

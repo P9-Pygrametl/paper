@@ -11,9 +11,25 @@
   cpygrametl2_async_db: "multiprocessing async",
   jython1: "jython sequential",
   jython2: "jython multiprocessing",
+  "pipeline sequential": "pipeline sequential",
+  "pipeline multiprocessing": "pipeline multiprocessing",
+  "pipeline free-threading": "pipeline free-threading",
 )
 #let impl-name(name) = impl-names.at(name, default: name)
-#let runtime-name(runtime) = runtime.replace("cpython-", "")
+#let runtime-name(runtime) = runtime.replace("cpython-", "").replace("jython-", "")
+
+#let group-name(group) = {
+  let base = impl-name(group.at(0))
+  let rt = runtime-name(group.at(1))
+
+  if rt.ends-with("t") and not base.starts-with("pipeline") {
+    base.replace("sequential", "sequential free-threading").replace("multiprocessing", "free-threading")
+  } else {
+    base
+  }
+}
+
+#let label-of(group) = [#group-name(group) / #runtime-name(group.at(1))]
 
 // ---------- Data ----------
 #let raw-data = csv(csv-path, row-type: dictionary)
