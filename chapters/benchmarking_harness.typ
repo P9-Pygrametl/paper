@@ -47,12 +47,16 @@ This validation exposed a bug in pygrametl's multiprocessing implementation, whe
   table(
     columns: (auto, auto),
     align: (left, left),
+    stroke: none,
+    table.hline(),
     table.header[*Parameter*][*Levels*],
+    table.hline(),
     [`batchsize`], [250, 500, 1000, 2500],
     [`queuesize`], [10, 50, 100, 200],
     [`bulksize`], [50k, 100k, 250k, 500k],
     [`fetchsize`], [1k, 5k, 20k, 100k],
     [`JVM heap`], [4g, 6g, 8g],
+    table.hline(),
   ),
   caption: [Tuning levels.],
 ) <tab:tuning>
